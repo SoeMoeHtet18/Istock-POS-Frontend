@@ -1,13 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* tailwind class binding */
+.center {
+  @apply flex items-center justify-center flex-col;
+}
+
+.form-control {
+  @apply px-4 py-2 border rounded-md w-full;
+}
+/* end tailwind  */
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+.form-group {
+  position: relative;
+}
+
+.form-icon {
+  position: absolute;
+  top: 0;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 20px;
+  height: 100%;
+  border-right: 1px solid #babdc4;
+}
+
+.form-input {
+  padding-left: 3.5rem;
+}
+
+.d-none {
+  display: none !important;
 }

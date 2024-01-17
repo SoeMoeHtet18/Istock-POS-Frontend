@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+// App.js
+import React, { useEffect } from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import Login from "./pages/Login";
+import Main from "./pages/{overview}";
+import { getToken } from "./tools/reducers/authReducer";
+
+const router = createBrowserRouter([
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/",
+    element: <Main />,
+  },
+]);
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const authState = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  let path = window.location.pathname;
+
+  // redirect to login if not authenticated except login and logout routes
+  useEffect(() => {
+    if (path !== "/login" && path !== "/logout") {
+      if (!authState.token && path !== "/login") {
+        window.location.replace("/login");
+      } else {
+        dispatch(getToken());
+      }
+    }
+  }, [path, authState.isAuthenticated, dispatch]);
+
+  return <RouterProvider router={router} />;
 }
 
 export default App;

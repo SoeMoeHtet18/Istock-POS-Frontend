@@ -1,0 +1,16 @@
+#profile-boxes::-webkit-scrollbar {
+  display: none;
+}
+
+#eye,
+#eye-off {
+  border-right: unset !important;
+}
+
+#username:focus + #usernameIconContainer {
+  border-right-color: #000000;
+}
+
+#password:focus + #passwordIconContainer {
+  border-right-color: #000000;
+}
