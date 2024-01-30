@@ -8,48 +8,84 @@ import BlackButton from "../../components/common/buttons/BlackButton";
 import "./index.css";
 import { useDispatch } from "react-redux";
 import { setToken } from "../../tools/reducers/authReducer";
+import clsx from "clsx";
+import { motion } from "framer-motion";
 
 function Login() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const usernameRef = useRef(null);
+  const [usernameError, setUsernameError] = useState(null);
+  const [passwordError, setPasswordError] = useState(null);
   const passwordRef = useRef(null);
   const [rememberMe, setRememberMe] = useState(false);
   const [users, setUsers] = useState([]);
   const [open, setOpen] = useState(false);
   const [modalContent, setModalContent] = useState({});
   const dispatch = useDispatch();
+  const [loginFormKey, setLoginFormKey] = useState(0);
+
+  const ContentBody = ({ passwordError }) => {
+    return (
+      <div>
+        <input
+          className={clsx("form-control", !passwordError && "mb-5")}
+          type="password"
+          placeholder="Enter Password"
+          ref={passwordRef}
+        />
+        <motion.span
+          className={clsx(
+            "text-red-500",
+            "text-xs",
+            "mb-3",
+            passwordError ? "block" : "hidden"
+          )}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          {passwordError}
+        </motion.span>
+        <BlackButton
+          width="100%"
+          text="Log In"
+          isInput={true}
+          onClick={(e) => {
+            e.preventDefault();
+            formHandler();
+          }}
+        />
+      </div>
+    );
+  };
 
   const handleOpen = (user) => {
+    setPasswordError(null);
     setOpen(true);
     usernameRef.current.value = user.username;
     const data = {
       title: "Log In as " + user.name,
-      body: (
-        <div>
-          <input
-            className="form-control mb-5"
-            type="password"
-            placeholder="Enter Password"
-            ref={passwordRef}
-          />
-          <BlackButton
-            width="100%"
-            text="Log In"
-            isInput={true}
-            onClick={(e) => {
-              e.preventDefault();
-              formHandler();
-            }}
-          />
-        </div>
-      ),
+      body: <ContentBody passwordError={passwordError} />,
     };
 
     setModalContent(data);
   };
 
-  const handleClose = () => setOpen(false);
+  useEffect(() => {
+    const data = {
+      ...modalContent,
+      body: <ContentBody passwordError={passwordError} />,
+    };
+
+    setModalContent(data);
+  }, [passwordError]);
+
+  const handleClose = () => {
+    setPasswordError(null);
+    setOpen(false);
+    setLoginFormKey((prevKey) => prevKey + 1);
+  };
 
   const getAllStaffs = async () => {
     await axios.get(process.env.REACT_APP_URL + "/staffs").then((res) => {
@@ -68,6 +104,13 @@ function Login() {
   };
 
   const formHandler = async () => {
+    setUsernameError(null);
+    setPasswordError(null);
+    let isValidate = formValidator();
+    if (!isValidate) {
+      return;
+    }
+
     await axios
       .post(
         process.env.REACT_APP_URL + "/login",
@@ -84,6 +127,10 @@ function Login() {
         }
       )
       .then((res) => {
+        if (res.status === 204) {
+          setUsernameError("User not found!");
+          return;
+        }
         const response = res.data;
         const data = response.data;
         if (response.success) {
@@ -92,10 +139,10 @@ function Login() {
         }
       })
       .catch((error) => {
-        if (error.response) {
-          console.log(error.response.data);
-          console.log(error.response.status);
-          console.log(error.response.headers);
+        const response = error.response;
+        if (response && response.status === 422) {
+          setPasswordError(response.data.message);
+          return;
         } else if (error.request) {
           console.log(error.request);
         } else {
@@ -103,6 +150,18 @@ function Login() {
         }
         console.log(error.config);
       });
+  };
+
+  const formValidator = () => {
+    if (usernameRef.current.value === "") {
+      setUsernameError("Please fill your username*");
+      return false;
+    }
+    if (passwordRef.current.value === "") {
+      setPasswordError("Please input your password*");
+      return false;
+    }
+    return true;
   };
 
   return (
@@ -121,6 +180,7 @@ function Login() {
         </h1>
         <ProfileContainer users={users} onClick={handleOpen} />
         <LoginForm
+          key={loginFormKey}
           usernameRef={usernameRef}
           passwordRef={passwordRef}
           rememberMe={rememberMe}
@@ -128,6 +188,9 @@ function Login() {
           showPassword={showPassword}
           togglePswVisibility={togglePswVisibility}
           formHandler={formHandler}
+          usernameError={usernameError}
+          passwordError={passwordError}
+          isModalOpen={open}
         />
         <ModalContainer
           data={modalContent}

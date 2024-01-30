@@ -5,6 +5,7 @@ import { Form } from "react-router-dom";
 import BlackButton from "../../components/common/buttons/BlackButton";
 import clsx from "clsx";
 import PropTypes from "prop-types";
+import { motion } from "framer-motion";
 
 function LoginForm({
   usernameRef,
@@ -14,6 +15,9 @@ function LoginForm({
   setRememberMe,
   togglePswVisibility,
   formHandler,
+  usernameError,
+  passwordError,
+  isModalOpen,
 }) {
   useEffect(() => {
     if (passwordRef.current) {
@@ -27,7 +31,7 @@ function LoginForm({
       action={process.env.REACT_APP_URL + "/login"}
       className="w-2/3 mx-auto"
     >
-      <div className="form-group mb-5">
+      <div className="form-group">
         <input
           ref={usernameRef}
           id="username"
@@ -40,7 +44,19 @@ function LoginForm({
           <ion-icon name="person-circle-outline"></ion-icon>
         </div>
       </div>
-      <div className="form-group mb-5">
+      <motion.span
+        className={clsx(
+          "text-red-500",
+          "text-xs",
+          usernameError ? "block" : "hidden"
+        )}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        {usernameError}
+      </motion.span>
+      <div className={clsx("form-group", usernameError ? "mt-2" : "mt-5")}>
         <input
           ref={passwordRef}
           id="password"
@@ -77,7 +93,26 @@ function LoginForm({
           <ion-icon name="eye-off-outline"></ion-icon>
         </div>
       </div>
-      <div className="form-group mb-5 items-center ml-2">
+      <motion.span
+        className={clsx(
+          "text-red-500",
+          "text-xs",
+          passwordError && !isModalOpen ? "block" : "hidden"
+        )}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        {passwordError}
+      </motion.span>
+      <div
+        className={clsx(
+          "form-group",
+          "items-center",
+          "ml-2",
+          passwordError ? "mt-2" : "mt-5"
+        )}
+      >
         <input
           type="checkbox"
           id="remember_me"
@@ -111,6 +146,8 @@ LoginForm.propTypes = {
   setRememberMe: PropTypes.func.isRequired,
   togglePswVisibility: PropTypes.func.isRequired,
   formHandler: PropTypes.func.isRequired,
+  usernameError: PropTypes.string,
+  passwordError: PropTypes.string,
 };
 
 export default LoginForm;
