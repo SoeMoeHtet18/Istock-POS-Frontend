@@ -13,18 +13,38 @@ function Main() {
     window.HSStaticMethods.autoInit();
   }, [location.pathname]);
 
-  const shopTabs = [
-    {
-      title: "Overview",
-      slug: "overview",
-      content: <ShopContent />,
-    },
-    {
-      title: "Test",
-      slug: "test",
-      content: <div>This is Testing</div>,
-    },
-  ];
+  const tabs = {
+    sale: [
+      {
+        title: "Sale",
+        slug: "sale",
+        content: <ShopContent />,
+      },
+      {
+        title: "Sale Order",
+        slug: "sale_order",
+        content: <div>This is Testing</div>,
+      },
+
+      {
+        title: "Return In",
+        slug: "return_in",
+        content: <div>This is Testing</div>,
+      },
+
+      {
+        title: "Delivery",
+        slug: "delivery",
+        content: <div>This is Testing</div>,
+      },
+
+      {
+        title: "Stock Exchange",
+        slug: "stock_exchange",
+        content: <div>This is Testing</div>,
+      },
+    ],
+  };
 
   return (
     <main>
@@ -33,7 +53,7 @@ function Main() {
         <div className="flex flex-col pr-5" style={{ width: "87vw" }}>
           <NavBar />
           <FilterBox />
-          <MainContent tabs={shopTabs} />
+          <MainContent tabs={tabs.sale} />
         </div>
       </div>
     </main>

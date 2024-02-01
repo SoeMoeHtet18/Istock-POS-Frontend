@@ -33,7 +33,7 @@ const ListItem = styled("li")(({ theme }) => ({
 }));
 
 const ListItemButton = styled("div")(({ theme }) => ({
-  padding: "8px 16px",
+  padding: "4px 16px",
   margin: 0,
   cursor: "pointer",
   "&:hover": {
@@ -53,22 +53,37 @@ export default function SideBar() {
         <img src="/logo/profile.png" width={160} height={40} />
       </div>
       <List>
-        {["Product", "Category", "Subcategory", "Shop", "Supplier"].map(
-          (text, index) => (
-            <Fragment key={text}>
-              <ListItem
-                key={text}
-                disablePadding
-                className={activeItem === text ? "active" : ""}
-                onClick={() => setActiveItem(text)}
-              >
-                <ListItemButton>
-                  <ListItemText primary={text} className="text-center" />
-                </ListItemButton>
-              </ListItem>
-            </Fragment>
-          )
-        )}
+        {[
+          "Sale",
+          "Purchase",
+          "Transfer",
+          "Adjust/Convert",
+          "Stock Status",
+          "Price/Discount",
+          "Consignment",
+          "Outstanding",
+          "Gross Profit",
+        ].map((text, index) => (
+          <Fragment key={text}>
+            <ListItem
+              key={text}
+              disablePadding
+              className={activeItem === text ? "active" : ""}
+              onClick={() => setActiveItem(text)}
+            >
+              <ListItemButton>
+                <ListItemText
+                  primary={text}
+                  className="text-center"
+                  primaryTypographyProps={{
+                    fontSize: "0.75rem",
+                    fontWeight: 500,
+                  }}
+                />
+              </ListItemButton>
+            </ListItem>
+          </Fragment>
+        ))}
       </List>
     </Box>
   );

@@ -7,6 +7,7 @@ import Main from "./pages/{overview}";
 import { getToken } from "./tools/reducers/authReducer";
 
 import "preline/preline";
+import { SetUp } from "./pages/SetUp";
 
 window.HSStaticMethods = window.HSStaticMethods || {};
 
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Main />,
+  },
+  {
+    path: "setup",
+    element: <SetUp />,
   },
 ]);
 
