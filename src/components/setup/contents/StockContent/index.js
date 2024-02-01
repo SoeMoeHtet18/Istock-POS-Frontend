@@ -80,7 +80,8 @@ export const StockContent = () => {
 
   return (
     <Content
-      title={"Stock"}
+      pageTitle={"Stock"}
+      tableTitle={"Stock List"}
       navBar={<NavBar />}
       dataTable={<DataTable theads={theads} tRows={rows} />}
     />
