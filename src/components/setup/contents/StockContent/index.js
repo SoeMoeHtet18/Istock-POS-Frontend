@@ -3,10 +3,14 @@ import { FaHome } from "react-icons/fa";
 import "./index.css";
 import DataTable from "../../layout/table";
 import { Content } from "../../layout/content";
-import StockTableCellls from "../../tableCells/StockTableCellls";
+import axios from "axios";
+import StockTableInput from "../../tableInputs/StockTableInput";
+import StockTableCell from "../../tableCells/StockTableCell";
+import { useSelector } from "react-redux";
+import { useGetAllStocksQuery } from "../../../../tools/api-services/stockApi";
 
 const NavBar = () => (
-  <div className="p-2 border w-1w flex-1">
+  <div className="p-2 border w-1.2w flex-1">
     <div className="flex-ver-center">
       <FaHome />
       <h3 className="ms-1 text-sm">Stock</h3>
@@ -16,6 +20,7 @@ const NavBar = () => (
 
 export const StockContent = () => {
   const [dataLength, setDataLength] = useState(0);
+  const [formData, setFormData] = useState({});
 
   const handleDataChange = (index) => {
     setDataLength((prevDataLength) =>
@@ -36,14 +41,20 @@ export const StockContent = () => {
   ];
 
   const tRows = [];
+  const { data, error, isLoading } = useGetAllStocksQuery();
+
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
 
   while (tRows.length < 10) {
     tRows.push(
-      <StockTableCellls
+      <StockTableInput
         key={`row-${tRows.length}`}
         index={tRows.length}
         dataLength={dataLength}
         onDataLengthChange={handleDataChange}
+        setFormData={setFormData}
       />
     );
   }
@@ -56,21 +67,23 @@ export const StockContent = () => {
       if (dataLength < updatedRows.length) {
         // Update the specific row at the given index
         updatedRows[dataLength] = (
-          <StockTableCellls
+          <StockTableInput
             key={dataLength}
             index={dataLength}
             dataLength={dataLength}
             onDataLengthChange={handleDataChange}
+            setFormData={setFormData}
           />
         );
       } else {
         // Add a new row if the dataLength exceeds the current row count
         updatedRows.push(
-          <StockTableCellls
+          <StockTableInput
             key={dataLength}
             index={dataLength}
             dataLength={dataLength}
             onDataLengthChange={handleDataChange}
+            setFormData={setFormData}
           />
         );
       }
@@ -84,6 +97,7 @@ export const StockContent = () => {
       tableTitle={"Stock List"}
       navBar={<NavBar />}
       dataTable={<DataTable theads={theads} tRows={rows} />}
+      dataLength={dataLength}
     />
   );
 };

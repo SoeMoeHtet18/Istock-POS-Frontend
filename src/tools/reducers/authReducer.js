@@ -16,8 +16,9 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
       state.token = action.payload;
     },
+    // if we have to refresh token, implment refesh token logics to this
     getToken: (state) => {
-      if (state.token === null) {
+      if (state.token == null) {
         state.token = localStorage.getItem("token");
       }
       return state;
@@ -30,4 +31,4 @@ const authSlice = createSlice({
 });
 
 export const { setToken, getToken, unsetToken } = authSlice.actions;
-export default authSlice.reducer;
+export default authSlice;

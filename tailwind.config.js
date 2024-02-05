@@ -10,7 +10,10 @@ module.exports = {
       },
       width: {
         "1w": "10vw",
+        "1.2w": "12vw",
+        "1.5w": "15vw",
         "2.5w": "25vw",
+        "5.8w": "58vw",
         "6w": "60vw",
       },
       height: {

@@ -36,9 +36,9 @@ export const SetUp = () => {
   ];
 
   return (
-    <div>
+    <div className="flex flex-col h-screen">
       <AppBar />
-      <div>
+      <div className="flex-1">
         <MainContent tabs={tabs} />
       </div>
     </div>
