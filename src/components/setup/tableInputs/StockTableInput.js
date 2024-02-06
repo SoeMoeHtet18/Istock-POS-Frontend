@@ -90,13 +90,12 @@ const StockTableInput = ({
   return (
     <tr className="border-b">
       {tcells.map((tcell) => (
-        <td key={tcell.value}>
+        <td key={tcell.slug}>
           <input
             ref={tcell.ref}
             type={tcell.type}
             className={`w-full ${tcell.slug + "-" + index}`}
             disabled={index > dataLength}
-            // value={tcell.value}
             onChange={handleInputChange(
               setFormData,
               onDataLengthChange,

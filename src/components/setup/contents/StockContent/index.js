@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { FaHome } from "react-icons/fa";
 import "./index.css";
 import DataTable from "../../layout/table";
 import { Content } from "../../layout/content";
@@ -8,15 +7,7 @@ import StockTableInput from "../../tableInputs/StockTableInput";
 import StockTableCell from "../../tableCells/StockTableCell";
 import { useSelector } from "react-redux";
 import { useGetAllStocksQuery } from "../../../../tools/api-services/stockApi";
-
-const NavBar = () => (
-  <div className="p-2 border w-1.2w flex-1">
-    <div className="flex-ver-center">
-      <FaHome />
-      <h3 className="ms-1 text-sm">Stock</h3>
-    </div>
-  </div>
-);
+import { NavBar } from "../../layout/navBar";
 
 export const StockContent = () => {
   const [dataLength, setDataLength] = useState(0);
@@ -95,7 +86,7 @@ export const StockContent = () => {
     <Content
       pageTitle={"Stock"}
       tableTitle={"Stock List"}
-      navBar={<NavBar />}
+      navBar={<NavBar title="Stock" />}
       dataTable={<DataTable theads={theads} tRows={rows} />}
       dataLength={dataLength}
     />
