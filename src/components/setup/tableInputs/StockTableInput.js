@@ -5,6 +5,7 @@ const StockTableInput = ({
   dataLength,
   onDataLengthChange,
   setFormData,
+  category,
 }) => {
   const codeRef = useRef(null);
   const descriptionRef = useRef(null);
@@ -40,7 +41,7 @@ const StockTableInput = ({
     {
       ref: purchaseCurrencyRef,
       slug: "purchaseCurrency",
-      type: "number",
+      type: "text",
     },
     {
       ref: purchasePriceRef,
@@ -50,7 +51,7 @@ const StockTableInput = ({
     {
       ref: supplierCurrencyRef,
       slug: "supplierCurrency",
-      type: "number",
+      type: "text",
     },
     {
       ref: salePriceRef,
@@ -80,10 +81,13 @@ const StockTableInput = ({
       });
     };
 
-  const goToNextRow = (e, index, ref, slug) => {
+  const handleKeyDown = (e, index, ref, slug) => {
     if (e.key === "Shift" && e.key !== "Tab" && ref === gpRef) {
       codeRef.current = document.querySelector(`#${slug}-${index + 1}`);
       codeRef.current.focus();
+    } else if (e.key === "Enter" && ref === codeRef) {
+      descriptionRef.current.focus();
+      categoryRef.current.value = `${category.name} - ${category.code}`;
     }
   };
 
@@ -102,7 +106,7 @@ const StockTableInput = ({
               index,
               tcell.slug
             )}
-            onKeyDown={(e) => goToNextRow(e, index, tcell.ref, tcell.slug)}
+            onKeyDown={(e) => handleKeyDown(e, index, tcell.ref, tcell.slug)}
           />
         </td>
       ))}

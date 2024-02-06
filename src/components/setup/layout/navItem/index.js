@@ -13,6 +13,7 @@ export const NavItem = ({
   classes,
   icon,
   parentItemId,
+  onClick,
 }) => {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
@@ -37,6 +38,7 @@ export const NavItem = ({
         onContextMenu={openMiniMenu}
         className={"flex-ver-center" + " " + classes}
         ref={anchorRef}
+        onClick={() => onClick(item)}
       >
         {icon}
         <h3 className="ms-1 text-sm">

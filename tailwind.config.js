@@ -27,6 +27,9 @@ module.exports = {
       fontFamily: {
         bree: "Bree Serif",
       },
+      fontSize: {
+        "2xs": "10px",
+      },
     },
   },
   plugins: [require("preline/plugin")],

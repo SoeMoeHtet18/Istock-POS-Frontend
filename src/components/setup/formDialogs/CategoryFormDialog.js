@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { useGetAllCategoriesQuery } from "../../../tools/api-services/categoryApi";
 
-export const CategoryFormOpen = ({ open, handleClose, apiCall, classId }) => {
+export const CategoryFormDialog = ({ open, handleClose, apiCall, classId }) => {
   const { data, error, isLoading } = useGetAllCategoriesQuery();
 
   const categoryOptions =

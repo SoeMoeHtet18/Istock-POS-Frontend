@@ -47,3 +47,11 @@ code {
 .d-none {
   display: none !important;
 }
+
+.grid {
+  display: grid;
+}
+
+.grid-2 {
+  grid-template-columns: 1fr 1fr;
+}

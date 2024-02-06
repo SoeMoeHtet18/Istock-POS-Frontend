@@ -20,3 +20,12 @@ table tbody {
   height: 90%;
   overflow: auto;
 }
+
+#setUpNavBar::-webkit-scrollbar {
+  display: none;
+}
+
+#setUpNavBar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

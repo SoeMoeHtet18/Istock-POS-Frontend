@@ -6,6 +6,7 @@ export const Content = ({
   navBar,
   dataTable,
   dataLength,
+  detail,
 }) => {
   return (
     <div className="flex h-full">
@@ -46,7 +47,7 @@ export const Content = ({
       </div>
       <div className="ms-1">
         <div className="h-1/2h"></div>
-        <div className="w-2.5w border"></div>
+        <div className="w-2.5w">{detail}</div>
       </div>
     </div>
   );

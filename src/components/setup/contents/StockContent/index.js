@@ -7,11 +7,13 @@ import StockTableInput from "../../tableInputs/StockTableInput";
 import StockTableCell from "../../tableCells/StockTableCell";
 import { useSelector } from "react-redux";
 import { useGetAllStocksQuery } from "../../../../tools/api-services/stockApi";
-import { NavBar } from "../../layout/navBar";
+import { StockNavBar } from "../../navBars/StockNavBar";
+import { StockDetail } from "../../sideDetails/StockDetail";
 
 export const StockContent = () => {
   const [dataLength, setDataLength] = useState(0);
   const [formData, setFormData] = useState({});
+  const [category, setCategory] = useState({});
 
   const handleDataChange = (index) => {
     setDataLength((prevDataLength) =>
@@ -32,11 +34,17 @@ export const StockContent = () => {
   ];
 
   const tRows = [];
-  const { data, error, isLoading } = useGetAllStocksQuery();
+  const {
+    data,
+    error,
+    isLoading,
+    refetch: refetchStocks,
+  } = useGetAllStocksQuery();
 
   useEffect(() => {
+    console.log("category ", category);
     console.log(formData);
-  }, [formData]);
+  }, [formData, category]);
 
   while (tRows.length < 10) {
     tRows.push(
@@ -46,6 +54,7 @@ export const StockContent = () => {
         dataLength={dataLength}
         onDataLengthChange={handleDataChange}
         setFormData={setFormData}
+        category={category}
       />
     );
   }
@@ -64,6 +73,7 @@ export const StockContent = () => {
             dataLength={dataLength}
             onDataLengthChange={handleDataChange}
             setFormData={setFormData}
+            category={category}
           />
         );
       } else {
@@ -75,20 +85,27 @@ export const StockContent = () => {
             dataLength={dataLength}
             onDataLengthChange={handleDataChange}
             setFormData={setFormData}
+            category={category}
           />
         );
       }
       return updatedRows;
     });
-  }, [dataLength]);
+  }, [dataLength, category]);
+
+  const refetchDataAndStoreCategory = (category) => {
+    setCategory(category);
+    refetchStocks();
+  };
 
   return (
     <Content
       pageTitle={"Stock"}
       tableTitle={"Stock List"}
-      navBar={<NavBar title="Stock" />}
+      navBar={<StockNavBar onItemClick={refetchDataAndStoreCategory} />}
       dataTable={<DataTable theads={theads} tRows={rows} />}
       dataLength={dataLength}
+      detail={<StockDetail />}
     />
   );
 };
