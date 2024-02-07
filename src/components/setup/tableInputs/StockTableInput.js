@@ -1,11 +1,15 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const StockTableInput = ({
   index,
   dataLength,
   onDataLengthChange,
+  formData,
   setFormData,
   category,
+  setEditIndex,
+  editingSlug,
+  editIndex,
 }) => {
   const codeRef = useRef(null);
   const descriptionRef = useRef(null);
@@ -68,7 +72,7 @@ const StockTableInput = ({
   const handleInputChange =
     (setFormData, onDataLengthChange, index, slug) => (e) => {
       onDataLengthChange(index);
-
+      setEditIndex(index);
       // Use setFormData to update the state
       setFormData((prevFormData) => {
         const updatedSlugArray = [...(prevFormData[slug] || [])]; // Create a copy of the array for the given slug
@@ -79,17 +83,46 @@ const StockTableInput = ({
           [slug]: updatedSlugArray,
         };
       });
+      setEditIndex(index);
     };
 
-  const handleKeyDown = (e, index, ref, slug) => {
+  const handleKeyDown = (e, index, ref, slug, category) => {
     if (e.key === "Shift" && e.key !== "Tab" && ref === gpRef) {
       codeRef.current = document.querySelector(`#${slug}-${index + 1}`);
       codeRef.current.focus();
     } else if (e.key === "Enter" && ref === codeRef) {
-      descriptionRef.current.focus();
       categoryRef.current.value = `${category.name} - ${category.code}`;
+      descriptionRef.current.focus();
     }
   };
+
+  useEffect(() => {
+    let ref;
+    switch (editingSlug) {
+      case "code":
+        ref = codeRef;
+        break;
+      case "description":
+        ref = descriptionRef;
+        break;
+      case "short":
+        ref = shortRef;
+        break;
+      case "purchasePrice":
+        ref = purchasePriceRef;
+        break;
+      case "salePrice":
+        ref = salePriceRef;
+        break;
+      default:
+        ref = categoryRef;
+        break;
+    }
+    if (ref !== categoryRef) {
+      ref.current = document.querySelector(`.${editingSlug}-${editIndex}`);
+      ref.current.value = formData?.[editingSlug]?.[editIndex] ?? "";
+    }
+  }, [formData, editingSlug, editIndex]);
 
   return (
     <tr className="border-b">
@@ -106,7 +139,11 @@ const StockTableInput = ({
               index,
               tcell.slug
             )}
-            onKeyDown={(e) => handleKeyDown(e, index, tcell.ref, tcell.slug)}
+            onKeyDown={(e) =>
+              handleKeyDown(e, index, tcell.ref, tcell.slug, category)
+            }
+            onFocus={() => setEditIndex(index)}
+            onBlur={() => setEditIndex(null)}
           />
         </td>
       ))}

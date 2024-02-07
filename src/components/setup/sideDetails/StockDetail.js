@@ -1,7 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { TiArrowDownThick } from "react-icons/ti";
 
-export const StockDetail = () => {
+export const StockDetail = ({
+  categories,
+  selectedCategory,
+  index,
+  formData,
+  setFormData,
+  setEditingSlug,
+}) => {
+  const handleInputChange = (setFormData, index, slug) => (e) => {
+    // Use setFormData to update the state
+    setFormData((prevFormData) => {
+      const updatedSlugArray = [...(prevFormData[slug] || [])]; // Create a copy of the array for the given slug
+      updatedSlugArray[index] = e.target.value; // Update the value at the specified index
+
+      return {
+        ...prevFormData,
+        [slug]: updatedSlugArray,
+      };
+    });
+    setEditingSlug(slug);
+  };
+
   return (
     <>
       <div className="border relative px-2 pt-3 pb-2 mb-3">
@@ -10,29 +31,39 @@ export const StockDetail = () => {
           <div className="text-xs">
             <div className="flex justify-between py-0.5 h-7">
               <label>Code</label>
-              <input type="text" className="w-3/5 border"></input>
+              <input
+                type="text"
+                className="w-3/5 border"
+                value={formData?.code?.[index] ?? ""}
+                onChange={handleInputChange(setFormData, index, "code")}
+              ></input>
             </div>
             <div className="flex justify-between py-0.5 h-7">
               <label>Description</label>
-              <input type="text" className="w-3/5 border"></input>
+              <input
+                type="text"
+                className="w-3/5 border"
+                value={formData?.description?.[index] ?? ""}
+                onChange={handleInputChange(setFormData, index, "description")}
+              ></input>
             </div>
             <div className="flex justify-between py-0.5 h-7">
               <label>Short Name</label>
-              <input type="text" className="w-3/5 border"></input>
+              <input
+                type="text"
+                className="w-3/5 border"
+                value={formData?.short?.[index] ?? ""}
+                onChange={handleInputChange(setFormData, index, "short")}
+              ></input>
             </div>
             <div className="flex justify-between py-0.5 h-7">
               <label>Category</label>
-              <select className="w-3/5 border">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-                <option>6</option>
-                <option>7</option>
-                <option>8</option>
-                <option>9</option>
-                <option>10</option>
+              <select className="w-3/5 border" value={selectedCategory.id}>
+                {categories?.map((category) => (
+                  <option value={category.id}>
+                    {category.name + " - " + category.code}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="flex justify-between py-0.5 h-7">
@@ -135,11 +166,25 @@ export const StockDetail = () => {
             <div className="text-xs">
               <div className="flex justify-between py-0.5 h-7">
                 <label>Pur Price</label>
-                <input type="text" className="w-3/5 border"></input>
+                <input
+                  type="text"
+                  className="w-3/5 border"
+                  value={formData?.purchasePrice?.[index] ?? ""}
+                  onChange={handleInputChange(
+                    setFormData,
+                    index,
+                    "purchasePrice"
+                  )}
+                ></input>
               </div>
               <div className="flex justify-between py-0.5 h-7">
                 <label>Sale Price</label>
-                <input type="text" className="w-3/5 border"></input>
+                <input
+                  type="text"
+                  className="w-3/5 border"
+                  value={formData?.salePrice?.[index] ?? ""}
+                  onChange={handleInputChange(setFormData, index, "salePrice")}
+                ></input>
               </div>
               <div className="flex justify-between py-0.5 h-7">
                 <label>Sale 1</label>

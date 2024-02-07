@@ -4,21 +4,16 @@ import { BiCategoryAlt } from "react-icons/bi";
 import { MdOutlineCategory } from "react-icons/md";
 import { NavItem } from "../layout/navItem";
 import { NavBar } from "../layout/navBar";
-import {
-  useCreateCategoryMutation,
-  useGetAllCategoriesQuery,
-} from "../../../tools/api-services/categoryApi";
+import { useCreateCategoryMutation } from "../../../tools/api-services/categoryApi";
 import { useCreateSubCategoryMutation } from "../../../tools/api-services/subCategoryApi";
 import { ClassFormDialog } from "../formDialogs/ClassFormDialog";
 import { CategoryFormDialog } from "../formDialogs/CategoryFormDialog";
 
-export const StockNavBar = ({ onItemClick }) => {
+export const StockNavBar = ({ onItemClick, categories, refetchCategories }) => {
   const [navItems, setNavItems] = useState([]);
   const [classFormOpen, setClassFormOpen] = useState(false);
   const [categoryFormOpen, setCategoryFormOpen] = useState(false);
   const [parentClassId, setParentClassId] = useState(0);
-
-  const { data, refetch: refetchAllCategories } = useGetAllCategoriesQuery();
 
   const [createCategory, { isSuccess }] = useCreateCategoryMutation();
 
@@ -27,13 +22,13 @@ export const StockNavBar = ({ onItemClick }) => {
 
   useEffect(() => {
     if (isSuccess || subIsSuccess) {
-      refetchAllCategories();
+      refetchCategories();
     }
   }, [isSuccess, subIsSuccess]);
 
   useEffect(() => {
-    setNavItems(data);
-  }, [data]);
+    setNavItems(categories);
+  }, [categories]);
 
   const openClassForm = () => setClassFormOpen(true);
   const openCategoryForm = (e) => {
