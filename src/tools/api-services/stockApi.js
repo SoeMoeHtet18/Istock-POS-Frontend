@@ -19,7 +19,15 @@ export const stockApi = createApi({
       }),
       transformResponse: (response) => response.data.data,
     }),
+    createStock: builder.mutation({
+      query: (data) => ({
+        url: "/products/store",
+        method: "POST",
+        body: data,
+      }),
+      transformResponse: (response) => response.data.data,
+    }),
   }),
 });
 
-export const { useGetAllStocksQuery } = stockApi;
+export const { useGetAllStocksQuery, useCreateStockMutation } = stockApi;

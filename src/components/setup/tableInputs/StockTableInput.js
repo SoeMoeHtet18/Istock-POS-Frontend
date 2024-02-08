@@ -7,6 +7,7 @@ const StockTableInput = ({
   formData,
   setFormData,
   category,
+  subCategory,
   setEditIndex,
   editingSlug,
   editIndex,
@@ -77,22 +78,62 @@ const StockTableInput = ({
       setFormData((prevFormData) => {
         const updatedSlugArray = [...(prevFormData[slug] || [])]; // Create a copy of the array for the given slug
         updatedSlugArray[index] = e.target.value; // Update the value at the specified index
+        const updatedIDArray = [...(prevFormData.ids || [])];
+        updatedIDArray[index] = index + 1;
+        const updatedBrandArray = [...(prevFormData.brand || [])];
+        updatedBrandArray[index] = index + 1;
 
         return {
           ...prevFormData,
           [slug]: updatedSlugArray,
+          ids: updatedIDArray,
+          brand: updatedBrandArray,
         };
       });
       setEditIndex(index);
     };
 
-  const handleKeyDown = (e, index, ref, slug, category) => {
-    if (e.key === "Shift" && e.key !== "Tab" && ref === gpRef) {
-      codeRef.current = document.querySelector(`#${slug}-${index + 1}`);
-      codeRef.current.focus();
-    } else if (e.key === "Enter" && ref === codeRef) {
-      categoryRef.current.value = `${category.name} - ${category.code}`;
-      descriptionRef.current.focus();
+  const handleKeyDown = (
+    event,
+    index,
+    currentRef,
+    slug,
+    category,
+    subCategory,
+    setFormData
+  ) => {
+    const isShiftKey = event.key === "Shift";
+    const isEnterKey = event.key === "Enter";
+    const isTabKey = event.key === "Tab";
+
+    if (isShiftKey && !isTabKey && currentRef === gpRef) {
+      const nextElement = document.querySelector(`#${slug}-${index + 1}`);
+      if (nextElement) {
+        nextElement.focus();
+      }
+    } else if (isEnterKey && currentRef === codeRef) {
+      const selectedCategory = subCategory ?? category;
+      categoryRef.current.value = `${selectedCategory.name} - ${selectedCategory.code}`;
+
+      setFormData((prevFormData) => {
+        const updatedCategoryIds = [...(prevFormData.categoryIds || [])];
+        updatedCategoryIds[index] = selectedCategory.id;
+
+        const updatedSubCategoryIds = [...(prevFormData.subCategoryIds || [])];
+        if (subCategory) {
+          updatedSubCategoryIds[index] = subCategory.id;
+        }
+
+        return {
+          ...prevFormData,
+          categoryIds: updatedCategoryIds,
+          subCategoryIds: updatedSubCategoryIds,
+        };
+      });
+
+      if (descriptionRef.current) {
+        descriptionRef.current.focus();
+      }
     }
   };
 
@@ -140,10 +181,17 @@ const StockTableInput = ({
               tcell.slug
             )}
             onKeyDown={(e) =>
-              handleKeyDown(e, index, tcell.ref, tcell.slug, category)
+              handleKeyDown(
+                e,
+                index,
+                tcell.ref,
+                tcell.slug,
+                category,
+                subCategory,
+                setFormData
+              )
             }
             onFocus={() => setEditIndex(index)}
-            onBlur={() => setEditIndex(null)}
           />
         </td>
       ))}

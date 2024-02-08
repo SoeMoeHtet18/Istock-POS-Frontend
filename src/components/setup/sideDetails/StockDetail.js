@@ -1,19 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TiArrowDownThick } from "react-icons/ti";
+import { ImageUpload } from "../../common/inputs/ImageUpload";
 
 export const StockDetail = ({
   categories,
-  selectedCategory,
+  category,
+  subCategory,
   index,
   formData,
   setFormData,
   setEditingSlug,
 }) => {
-  const handleInputChange = (setFormData, index, slug) => (e) => {
+  const [detailInputs, setDetailInputs] = useState([]);
+
+  const handleInputChange = (setFormData, index, slug, selectedData) => (e) => {
     // Use setFormData to update the state
     setFormData((prevFormData) => {
       const updatedSlugArray = [...(prevFormData[slug] || [])]; // Create a copy of the array for the given slug
-      updatedSlugArray[index] = e.target.value; // Update the value at the specified index
+      updatedSlugArray[index] = selectedData ?? e.target.value; // Update the value at the specified index
 
       return {
         ...prevFormData,
@@ -23,85 +27,123 @@ export const StockDetail = ({
     setEditingSlug(slug);
   };
 
+  const imageUpload = (img) => {
+    console.log(img);
+    setFormData((prevFormData) => {
+      const updatedImgArray = [...(prevFormData["image"] || [])];
+      updatedImgArray[index] = img ?? null;
+
+      return {
+        ...prevFormData,
+        image: updatedImgArray,
+      };
+    });
+  };
+
+  useEffect(() => {
+    setDetailInputs([
+      {
+        label: "Code",
+        slug: "code",
+        type: "text",
+      },
+      {
+        label: "Description",
+        slug: "description",
+        type: "text",
+      },
+      {
+        label: "Short Name",
+        slug: "short",
+        type: "text",
+      },
+      {
+        label: "Category",
+        slug: "category",
+        type: "select",
+        options: categories,
+        value: category,
+        subValue: subCategory,
+      },
+      {
+        label: "Brand",
+        slug: "brand",
+        type: "select",
+        options: ["Brand 1", "Brand 2", "Brand 3"],
+      },
+      {
+        label: "Last Supplier",
+        slug: "last_supplier",
+        type: "select",
+        options: ["Supplier One", "Supplier Two", "Supplier Three"],
+      },
+      {
+        label: "Remark",
+        slug: "remark",
+        type: "text",
+      },
+    ]);
+  }, [categories, category, subCategory]);
+
   return (
     <>
       <div className="border relative px-2 pt-3 pb-2 mb-3">
         <span className="top-letter">Detail</span>
         <div className="flex">
-          <div className="text-xs">
-            <div className="flex justify-between py-0.5 h-7">
-              <label>Code</label>
-              <input
-                type="text"
-                className="w-3/5 border"
-                value={formData?.code?.[index] ?? ""}
-                onChange={handleInputChange(setFormData, index, "code")}
-              ></input>
-            </div>
-            <div className="flex justify-between py-0.5 h-7">
-              <label>Description</label>
-              <input
-                type="text"
-                className="w-3/5 border"
-                value={formData?.description?.[index] ?? ""}
-                onChange={handleInputChange(setFormData, index, "description")}
-              ></input>
-            </div>
-            <div className="flex justify-between py-0.5 h-7">
-              <label>Short Name</label>
-              <input
-                type="text"
-                className="w-3/5 border"
-                value={formData?.short?.[index] ?? ""}
-                onChange={handleInputChange(setFormData, index, "short")}
-              ></input>
-            </div>
-            <div className="flex justify-between py-0.5 h-7">
-              <label>Category</label>
-              <select className="w-3/5 border" value={selectedCategory.id}>
-                {categories?.map((category) => (
-                  <option value={category.id}>
-                    {category.name + " - " + category.code}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="flex justify-between py-0.5 h-7">
-              <label>Brand</label>
-              <select className="w-3/5 border">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-                <option>6</option>
-                <option>7</option>
-                <option>8</option>
-                <option>9</option>
-                <option>10</option>
-              </select>
-            </div>
-            <div className="flex justify-between py-0.5 h-7">
-              <label>Last Supplier</label>
-              <select className="w-3/5 border">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-                <option>6</option>
-                <option>7</option>
-                <option>8</option>
-                <option>9</option>
-                <option>10</option>
-              </select>
-            </div>
-            <div className="flex justify-between py-0.5 h-7">
-              <label>Remark</label>
-              <input type="text" className="w-3/5 border"></input>
-            </div>
+          <div className="text-xs flex-1">
+            {detailInputs.map((input) =>
+              input.type === "text" ? (
+                <div
+                  key={input.slug}
+                  className="flex justify-between py-0.5 w-full h-7"
+                >
+                  <label>{input.label}</label>
+                  <input
+                    type={input.type}
+                    className="w-3/5 border px-0.5"
+                    value={formData?.[input.slug]?.[index] ?? ""}
+                    onChange={handleInputChange(setFormData, index, input.slug)}
+                  ></input>
+                </div>
+              ) : (
+                <div
+                  key={input.slug}
+                  className="flex justify-between py-0.5 h-7"
+                >
+                  <label>{input.label}</label>
+                  <select
+                    className="w-3/5 border px-0.5"
+                    value={input.subValue ? input.subValue.id : input.value?.id}
+                    onChange={handleInputChange(
+                      setFormData,
+                      index,
+                      input.slug === "category" && input.subValue
+                        ? "subCategoryIds"
+                        : input.slug === "category" && !input.subValue
+                        ? "categoryIds"
+                        : input.slug,
+                      input.subValue ? input.subValue.id : input.value?.id
+                    )}
+                  >
+                    {input.options?.map((option) => (
+                      <option
+                        key={option.id}
+                        value={option.id}
+                        className="px-0.5"
+                      >
+                        {input.slug === "category"
+                          ? option.name + " - " + option.code
+                          : option.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )
+            )}
           </div>
-          <div className="w-5/12"></div>
+          <div className="w-5/12">
+            <ImageUpload imageUpload={imageUpload} />
+          </div>
         </div>
       </div>
       <div className="flex gap-1">
@@ -188,15 +230,42 @@ export const StockDetail = ({
               </div>
               <div className="flex justify-between py-0.5 h-7">
                 <label>Sale 1</label>
-                <input type="text" className="w-3/5 border"></input>
+                <input
+                  type="text"
+                  className="w-3/5 border"
+                  value={formData?.salePriceOne?.[index] ?? ""}
+                  onChange={handleInputChange(
+                    setFormData,
+                    index,
+                    "salePriceOne"
+                  )}
+                ></input>
               </div>
               <div className="flex justify-between py-0.5 h-7">
                 <label>Sale 2</label>
-                <input type="text" className="w-3/5 border"></input>
+                <input
+                  type="text"
+                  className="w-3/5 border"
+                  value={formData?.salePriceTwo?.[index] ?? ""}
+                  onChange={handleInputChange(
+                    setFormData,
+                    index,
+                    "salePriceTwo"
+                  )}
+                ></input>
               </div>
               <div className="flex justify-between py-0.5 h-7">
                 <label>Sale 3</label>
-                <input type="text" className="w-3/5 border"></input>
+                <input
+                  type="text"
+                  className="w-3/5 border"
+                  value={formData?.salePriceThree?.[index] ?? ""}
+                  onChange={handleInputChange(
+                    setFormData,
+                    index,
+                    "salePriceThree"
+                  )}
+                ></input>
               </div>
             </div>
             <div></div>

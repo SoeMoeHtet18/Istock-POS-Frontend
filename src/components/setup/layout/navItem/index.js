@@ -12,7 +12,7 @@ export const NavItem = ({
   item,
   classes,
   icon,
-  parentItemId,
+  parentItem,
   onClick,
 }) => {
   const [open, setOpen] = useState(false);
@@ -36,9 +36,9 @@ export const NavItem = ({
       <button
         data-id={item ? item.id : title}
         onContextMenu={openMiniMenu}
-        className={"flex-ver-center" + " " + classes}
+        className={`flex-ver-center ${classes}`}
         ref={anchorRef}
-        onClick={() => onClick(item)}
+        onClick={() => onClick(item, parentItem)}
       >
         {icon}
         <h3 className="ms-1 text-sm">
@@ -71,7 +71,7 @@ export const NavItem = ({
                     <MenuItem
                       key={option.name}
                       onClick={option.onClick}
-                      data-id={parentItemId ?? item.id}
+                      data-id={parentItem?.id ?? item.id}
                     >
                       {option.name}
                     </MenuItem>

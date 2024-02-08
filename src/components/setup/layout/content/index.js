@@ -7,6 +7,7 @@ export const Content = ({
   dataTable,
   dataLength,
   detail,
+  bottomNavBtns,
 }) => {
   return (
     <div className="flex h-full">
@@ -28,20 +29,24 @@ export const Content = ({
             </div>
           </div>
         </div>
-        <div className="flex flex-1">
-          <div className="flex flex-col w-1.2w text-sm h-full relative">
-            <span>Stock Count: {dataLength}</span>
+        <div className="flex flex-1 text-sm">
+          <div className="flex flex-col w-1.2w h-full relative">
+            <span>
+              {pageTitle} Count: {dataLength}
+            </span>
             <button className="text-red-500 border w-min px-3">Brand</button>
-            <div className="flex justify-between absolute w-full bottom-0">
-              <div className="cursor-pointer">
-                <span>F5: </span>
-                <span className="text-primary-200">Confirm</span>
-              </div>
-              <div className="cursor-pointer">
-                <span>F8: </span>
-                <span className="text-primary-200">Delete</span>
-              </div>
-            </div>
+          </div>
+          <div className="flex gap-x-8 absolute w-full bottom-0">
+            {bottomNavBtns.map((btn) => (
+              <button
+                key={btn.name}
+                className="cursor-pointer flex gap-x-3"
+                onClick={btn.onClick}
+              >
+                <span>{btn.key + ": "} </span>
+                <span className="text-primary-200">{btn.name}</span>
+              </button>
+            ))}
           </div>
         </div>
       </div>

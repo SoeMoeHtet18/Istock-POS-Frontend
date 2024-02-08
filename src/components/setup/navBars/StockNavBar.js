@@ -9,7 +9,12 @@ import { useCreateSubCategoryMutation } from "../../../tools/api-services/subCat
 import { ClassFormDialog } from "../formDialogs/ClassFormDialog";
 import { CategoryFormDialog } from "../formDialogs/CategoryFormDialog";
 
-export const StockNavBar = ({ onItemClick, categories, refetchCategories }) => {
+export const StockNavBar = ({
+  onCategoryClick,
+  onSubCategoryClick,
+  categories,
+  refetchCategories,
+}) => {
   const [navItems, setNavItems] = useState([]);
   const [classFormOpen, setClassFormOpen] = useState(false);
   const [categoryFormOpen, setCategoryFormOpen] = useState(false);
@@ -80,7 +85,7 @@ export const StockNavBar = ({ onItemClick, categories, refetchCategories }) => {
           options={classOptions}
           icon={<BiCategoryAlt />}
           classes="ml-4"
-          onClick={onItemClick}
+          onClick={onCategoryClick}
         />
 
         {/* Sub-categories */}
@@ -92,8 +97,8 @@ export const StockNavBar = ({ onItemClick, categories, refetchCategories }) => {
               icon={<MdOutlineCategory />}
               options={categoryOptions}
               classes="ml-8"
-              parentItemId={item.id}
-              onClick={onItemClick}
+              parentItem={item}
+              onClick={onSubCategoryClick}
             />
           ))}
       </div>

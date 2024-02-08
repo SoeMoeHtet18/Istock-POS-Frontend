@@ -6,7 +6,10 @@ import axios from "axios";
 import StockTableInput from "../../tableInputs/StockTableInput";
 import StockTableCell from "../../tableCells/StockTableCell";
 import { useSelector } from "react-redux";
-import { useGetAllStocksQuery } from "../../../../tools/api-services/stockApi";
+import {
+  useCreateStockMutation,
+  useGetAllStocksQuery,
+} from "../../../../tools/api-services/stockApi";
 import { StockNavBar } from "../../navBars/StockNavBar";
 import { StockDetail } from "../../sideDetails/StockDetail";
 import { useGetAllCategoriesQuery } from "../../../../tools/api-services/categoryApi";
@@ -15,11 +18,28 @@ export const StockContent = () => {
   const [dataLength, setDataLength] = useState(0);
   const [formData, setFormData] = useState({});
   const [category, setCategory] = useState({});
+  const [subCategory, setSubCategory] = useState({});
   const [editIndex, setEditIndex] = useState(null);
   const [editingSlug, setEditingSlug] = useState("");
 
+  const {
+    data: stocks,
+    error,
+    isLoading,
+    refetch: refetchStocks,
+  } = useGetAllStocksQuery();
+
   const { data: categories, refetch: refetchAllCategories } =
     useGetAllCategoriesQuery();
+
+  const [createStock, { isSuccess }] = useCreateStockMutation();
+
+  // useEffect(() => {
+  //   if (stocks) {
+  //     setFormData(...stocks);
+  //     setDataLength(stocks.length);
+  //   }
+  // }, [stocks]);
 
   const handleDataChange = (index) => {
     setDataLength((prevDataLength) =>
@@ -40,17 +60,75 @@ export const StockContent = () => {
   ];
 
   const tRows = [];
-  const {
-    data,
-    error,
-    isLoading,
-    refetch: refetchStocks,
-  } = useGetAllStocksQuery();
+
+  const createBulkStocks = () => {
+    const form = new FormData();
+
+    form.append("ids", formData.ids ? JSON.stringify(formData.ids) : []);
+    form.append("barcodes", formData.code ? JSON.stringify(formData.code) : []);
+    form.append(
+      "names",
+      formData.description ? JSON.stringify(formData.description) : []
+    );
+    form.append(
+      "short_names",
+      formData.short ? JSON.stringify(formData.short) : []
+    );
+    form.append(
+      "categoryIds",
+      formData.categoryIds ? JSON.stringify(formData.categoryIds) : []
+    );
+    form.append(
+      "subcategoryIds",
+      formData.subCategoryIds ? JSON.stringify(formData.subCategoryIds) : []
+    );
+    form.append("brands", formData.brand ? JSON.stringify(formData.brand) : []);
+    form.append(
+      "purchase_prices",
+      formData.purchasePrice ? JSON.stringify(formData.purchasePrice) : []
+    );
+    form.append(
+      "sale_prices",
+      formData.salePrice ? JSON.stringify(formData.salePrice) : []
+    );
+    form.append(
+      "sale_price_one",
+      formData.salePriceOne ? JSON.stringify(formData.salePriceOne) : []
+    );
+    form.append(
+      "sale_price_two",
+      formData.salePriceTwo ? JSON.stringify(formData.salePriceTwo) : []
+    );
+    form.append(
+      "sale_price_three",
+      formData.salePriceThree ? JSON.stringify(formData.salePriceThree) : []
+    );
+    form.append("images", formData.image ?? []);
+
+    createStock(form);
+  };
+
+  const bottomNavBtns = [
+    {
+      name: "Confirm",
+      key: "F5",
+      onClick: createBulkStocks,
+    },
+    {
+      name: "Delete",
+      key: "F8",
+      onClick: () => {},
+    },
+    {
+      name: "Unit Delete",
+      key: "Shift + F8",
+      onClick: () => {},
+    },
+  ];
 
   useEffect(() => {
-    console.log("category ", category);
     console.log(formData);
-  }, [formData, category]);
+  }, [formData]);
 
   while (tRows.length < 10) {
     tRows.push(
@@ -62,6 +140,7 @@ export const StockContent = () => {
         formData={formData}
         setFormData={setFormData}
         category={category}
+        subCategory={subCategory}
         editIndex={editIndex}
         setEditIndex={setEditIndex}
         editingSlug={editingSlug}
@@ -85,6 +164,7 @@ export const StockContent = () => {
             formData={formData}
             setFormData={setFormData}
             category={category}
+            subCategory={subCategory}
             editIndex={editIndex}
             setEditIndex={setEditIndex}
             editingSlug={editingSlug}
@@ -101,6 +181,7 @@ export const StockContent = () => {
             formData={formData}
             setFormData={setFormData}
             category={category}
+            subCategory={subCategory}
             editIndex={editIndex}
             setEditIndex={setEditIndex}
             editingSlug={editingSlug}
@@ -109,7 +190,7 @@ export const StockContent = () => {
       }
       return updatedRows;
     });
-  }, [dataLength, category, editingSlug, formData]);
+  }, [dataLength, category, editingSlug, formData, subCategory]);
 
   useEffect(() => {
     setRows((prevRows) => {
@@ -123,6 +204,7 @@ export const StockContent = () => {
           formData={formData}
           setFormData={setFormData}
           category={category}
+          subCategory={subCategory}
           editIndex={editIndex}
           setEditIndex={setEditIndex}
           editingSlug={editingSlug}
@@ -130,10 +212,17 @@ export const StockContent = () => {
       );
       return updatedRows;
     });
-  }, [editIndex, category, editingSlug, formData]);
+  }, [editIndex, category, editingSlug, formData, subCategory]);
 
-  const refetchDataAndStoreCategory = (category) => {
+  const refetchDataAndCacheCategory = (category) => {
     setCategory(category);
+    setSubCategory(null);
+    refetchStocks();
+  };
+
+  const refetchDataAndCacheSubCategory = (subCategory, category) => {
+    setCategory(category);
+    setSubCategory(subCategory);
     refetchStocks();
   };
 
@@ -143,7 +232,8 @@ export const StockContent = () => {
       tableTitle={"Stock List"}
       navBar={
         <StockNavBar
-          onItemClick={refetchDataAndStoreCategory}
+          onCategoryClick={refetchDataAndCacheCategory}
+          onSubCategoryClick={refetchDataAndCacheSubCategory}
           categories={categories}
           refetchCategories={refetchAllCategories}
         />
@@ -153,13 +243,15 @@ export const StockContent = () => {
       detail={
         <StockDetail
           categories={categories}
-          selectedCategory={category}
+          category={category}
+          subCategory={subCategory}
           index={editIndex}
           formData={formData}
           setFormData={setFormData}
           setEditingSlug={setEditingSlug}
         />
       }
+      bottomNavBtns={bottomNavBtns}
     />
   );
 };
