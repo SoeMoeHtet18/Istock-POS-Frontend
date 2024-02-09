@@ -21,11 +21,13 @@ export const StockContent = () => {
   const [subCategory, setSubCategory] = useState({});
   const [editIndex, setEditIndex] = useState(null);
   const [editingSlug, setEditingSlug] = useState("");
+  const [isDataCatched, setIsDataCatched] = useState(false);
 
   const {
     data: stocks,
     error,
     isLoading,
+    isSuccess: isStockSuccess,
     refetch: refetchStocks,
   } = useGetAllStocksQuery();
 
@@ -34,12 +36,30 @@ export const StockContent = () => {
 
   const [createStock, { isSuccess }] = useCreateStockMutation();
 
-  // useEffect(() => {
-  //   if (stocks) {
-  //     setFormData(...stocks);
-  //     setDataLength(stocks.length);
-  //   }
-  // }, [stocks]);
+  useEffect(() => {
+    if (stocks) {
+      console.log(stocks);
+      setFormData(() => ({
+        ids: stocks.map((stock) => stock.id) ?? [],
+        code: stocks.map((stock) => stock.barcode) ?? [],
+        description: stocks.map((stock) => stock.name) ?? [],
+        short: stocks.map((stock) => stock.short_name) ?? [],
+        categoryIds: stocks.map((stock) => stock.category_id) ?? [],
+        subCategoryIds: stocks.map((stock) => stock.sub_category_id) ?? [],
+        brand: stocks.map((stock) => stock.brand) ?? [],
+        purchaseCurrency: stocks.map((stock) => stock.purchase_currency) ?? [],
+        purchasePrice: stocks.map((stock) => stock.purchase_price) ?? [],
+        supplierCurrency: stocks.map((stock) => stock.supplier_currency) ?? [],
+        salePrice: stocks.map((stock) => stock.sale_price) ?? [],
+        salePriceOne: stocks.map((stock) => stock.sale_price_one) ?? [],
+        salePriceTwo: stocks.map((stock) => stock.sale_price_two) ?? [],
+        salePriceThree: stocks.map((stock) => stock.sale_price_three) ?? [],
+        gp: stocks.map((stock) => stock.gp) ?? [],
+        image: stocks.map((stock) => stock.image) ?? [],
+      }));
+      setDataLength(stocks.length);
+    }
+  }, [stocks]);
 
   const handleDataChange = (index) => {
     setDataLength((prevDataLength) =>
@@ -59,7 +79,7 @@ export const StockContent = () => {
     { title: "GP", width: "5%" },
   ];
 
-  const tRows = [];
+  const [rows, setRows] = useState([]);
 
   const createBulkStocks = () => {
     const form = new FormData();
@@ -127,35 +147,37 @@ export const StockContent = () => {
   ];
 
   useEffect(() => {
-    console.log(formData);
+    if (isStockSuccess && !isDataCatched) {
+      const dataFillLength = dataLength < 10 ? 10 : dataLength;
+      const newRows = [];
+      for (let i = 0; i <= dataFillLength; i++) {
+        newRows.push(
+          <StockTableInput
+            key={`row-${i}`}
+            index={i}
+            dataLength={dataLength}
+            onDataLengthChange={handleDataChange}
+            formData={formData}
+            setFormData={setFormData}
+            category={category}
+            subCategory={subCategory}
+            editIndex={editIndex}
+            setEditIndex={setEditIndex}
+            editingSlug={editingSlug}
+          />
+        );
+      }
+      setRows(newRows);
+      setIsDataCatched(true);
+    }
   }, [formData]);
-
-  while (tRows.length < 10) {
-    tRows.push(
-      <StockTableInput
-        key={`row-${tRows.length}`}
-        index={tRows.length}
-        dataLength={dataLength}
-        onDataLengthChange={handleDataChange}
-        formData={formData}
-        setFormData={setFormData}
-        category={category}
-        subCategory={subCategory}
-        editIndex={editIndex}
-        setEditIndex={setEditIndex}
-        editingSlug={editingSlug}
-      />
-    );
-  }
-
-  const [rows, setRows] = useState(tRows);
 
   useEffect(() => {
     setRows((prevRows) => {
       const updatedRows = [...prevRows];
-      if (dataLength < updatedRows.length) {
+      if (editIndex < updatedRows.length) {
         // Update the specific row at the given index
-        updatedRows[dataLength] = (
+        updatedRows[editIndex] = (
           <StockTableInput
             key={`row-${dataLength}`}
             index={dataLength}

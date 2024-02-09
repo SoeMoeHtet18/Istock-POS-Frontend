@@ -167,34 +167,38 @@ const StockTableInput = ({
 
   return (
     <tr className="border-b">
-      {tcells.map((tcell) => (
-        <td key={tcell.slug}>
-          <input
-            ref={tcell.ref}
-            type={tcell.type}
-            className={`w-full ${tcell.slug + "-" + index}`}
-            disabled={index > dataLength}
-            onChange={handleInputChange(
-              setFormData,
-              onDataLengthChange,
-              index,
-              tcell.slug
-            )}
-            onKeyDown={(e) =>
-              handleKeyDown(
-                e,
+      {tcells.map((tcell) => {
+        console.log(formData);
+        return (
+          <td key={tcell.slug}>
+            <input
+              ref={tcell.ref}
+              type={tcell.type}
+              className={`w-full ${tcell.slug + "-" + index}`}
+              disabled={index > dataLength}
+              value={formData?.[tcell.slug]?.[index] ?? ""}
+              onChange={handleInputChange(
+                setFormData,
+                onDataLengthChange,
                 index,
-                tcell.ref,
-                tcell.slug,
-                category,
-                subCategory,
-                setFormData
-              )
-            }
-            onFocus={() => setEditIndex(index)}
-          />
-        </td>
-      ))}
+                tcell.slug
+              )}
+              onKeyDown={(e) =>
+                handleKeyDown(
+                  e,
+                  index,
+                  tcell.ref,
+                  tcell.slug,
+                  category,
+                  subCategory,
+                  setFormData
+                )
+              }
+              onFocus={() => setEditIndex(index)}
+            />
+          </td>
+        );
+      })}
     </tr>
   );
 };
