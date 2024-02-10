@@ -6,6 +6,7 @@ const StockTableInput = ({
   onDataLengthChange,
   formData,
   setFormData,
+  categories,
   category,
   subCategory,
   setEditIndex,
@@ -41,7 +42,8 @@ const StockTableInput = ({
     {
       ref: categoryRef,
       slug: "category",
-      type: "text",
+      type: "select",
+      options: categories,
     },
     {
       ref: purchaseCurrencyRef,
@@ -74,12 +76,13 @@ const StockTableInput = ({
     (setFormData, onDataLengthChange, index, slug) => (e) => {
       onDataLengthChange(index);
       setEditIndex(index);
+      console.log(formData?.[slug]);
       // Use setFormData to update the state
       setFormData((prevFormData) => {
         const updatedSlugArray = [...(prevFormData[slug] || [])]; // Create a copy of the array for the given slug
         updatedSlugArray[index] = e.target.value; // Update the value at the specified index
         const updatedIDArray = [...(prevFormData.ids || [])];
-        updatedIDArray[index] = index + 1;
+        updatedIDArray[index] = updatedIDArray[index] ?? null;
         const updatedBrandArray = [...(prevFormData.brand || [])];
         updatedBrandArray[index] = index + 1;
 
@@ -90,7 +93,6 @@ const StockTableInput = ({
           brand: updatedBrandArray,
         };
       });
-      setEditIndex(index);
     };
 
   const handleKeyDown = (
@@ -111,13 +113,16 @@ const StockTableInput = ({
       if (nextElement) {
         nextElement.focus();
       }
-    } else if (isEnterKey && currentRef === codeRef) {
+    } else if (
+      (isEnterKey && currentRef === codeRef && category) ||
+      subCategory
+    ) {
       const selectedCategory = subCategory ?? category;
-      categoryRef.current.value = `${selectedCategory.name} - ${selectedCategory.code}`;
+      categoryRef.current.value = selectedCategory.id;
 
       setFormData((prevFormData) => {
         const updatedCategoryIds = [...(prevFormData.categoryIds || [])];
-        updatedCategoryIds[index] = selectedCategory.id;
+        updatedCategoryIds[index] = category.id;
 
         const updatedSubCategoryIds = [...(prevFormData.subCategoryIds || [])];
         if (subCategory) {
@@ -168,34 +173,78 @@ const StockTableInput = ({
   return (
     <tr className="border-b">
       {tcells.map((tcell) => {
-        console.log(formData);
+        let valueSlug = tcell.slug;
+        if (tcell.slug === "category") {
+          if (formData?.subCategoryIds?.[index]) {
+            valueSlug = "subCategoryIds";
+          } else {
+            valueSlug = "categoryIds";
+          }
+        }
         return (
           <td key={tcell.slug}>
-            <input
-              ref={tcell.ref}
-              type={tcell.type}
-              className={`w-full ${tcell.slug + "-" + index}`}
-              disabled={index > dataLength}
-              value={formData?.[tcell.slug]?.[index] ?? ""}
-              onChange={handleInputChange(
-                setFormData,
-                onDataLengthChange,
-                index,
-                tcell.slug
-              )}
-              onKeyDown={(e) =>
-                handleKeyDown(
-                  e,
+            {tcell.type === "select" ? (
+              <select
+                ref={tcell.ref}
+                className={`w-full ${tcell.slug + "-" + index}`}
+                disabled={index > dataLength}
+                value={formData?.[valueSlug]?.[index] ?? ""}
+                onChange={handleInputChange(
+                  setFormData,
+                  onDataLengthChange,
                   index,
-                  tcell.ref,
-                  tcell.slug,
-                  category,
-                  subCategory,
-                  setFormData
-                )
-              }
-              onFocus={() => setEditIndex(index)}
-            />
+                  valueSlug
+                )}
+              >
+                {valueSlug === "categoryIds"
+                  ? tcell.options?.map((option) => (
+                      <option key={option.id} value={option.id}>
+                        {option.name}
+                      </option>
+                    ))
+                  : valueSlug === "subCategoryIds"
+                  ? tcell.options?.map((option) => {
+                      if (formData?.categoryIds?.[index] === option.id) {
+                        return option.sub_categories.map((subOption) => (
+                          <option key={subOption.id} value={subOption.id}>
+                            {subOption.name} - {subOption.code}
+                          </option>
+                        ));
+                      }
+                    })
+                  : tcell.options?.map((option) => (
+                      <option key={option.id} value={option.id}>
+                        {option.name}
+                      </option>
+                    ))}
+              </select>
+            ) : (
+              <input
+                ref={tcell.ref}
+                type={tcell.type}
+                className={`w-full ${tcell.slug + "-" + index}`}
+                disabled={index > dataLength}
+                value={formData?.[tcell.slug]?.[index] ?? ""}
+                onChange={handleInputChange(
+                  setFormData,
+                  onDataLengthChange,
+                  index,
+                  tcell.slug
+                )}
+                onKeyDown={(e) =>
+                  handleKeyDown(
+                    e,
+                    index,
+                    tcell.ref,
+                    tcell.slug,
+                    category,
+                    subCategory,
+                    setFormData
+                  )
+                }
+                onFocus={() => setEditIndex(index)}
+              />
+            )}
           </td>
         );
       })}

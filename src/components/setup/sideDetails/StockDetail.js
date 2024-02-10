@@ -62,8 +62,6 @@ export const StockDetail = ({
         slug: "category",
         type: "select",
         options: categories,
-        value: category,
-        subValue: subCategory,
       },
       {
         label: "Brand",
@@ -113,7 +111,13 @@ export const StockDetail = ({
                   <label>{input.label}</label>
                   <select
                     className="w-3/5 border px-0.5"
-                    value={input.subValue ? input.subValue.id : input.value?.id}
+                    value={
+                      input.slug === "category"
+                        ? formData?.subCategoryIds?.[index] ??
+                          formData?.categoryIds?.[index] ??
+                          ""
+                        : formData?.[input.slug]?.[index]
+                    }
                     onChange={handleInputChange(
                       setFormData,
                       index,
@@ -122,20 +126,36 @@ export const StockDetail = ({
                         : input.slug === "category" && !input.subValue
                         ? "categoryIds"
                         : input.slug,
-                      input.subValue ? input.subValue.id : input.value?.id
+                      input.slug === "category"
+                        ? formData?.subCategoryIds?.[index] ??
+                            formData?.categoryIds?.[index] ??
+                            ""
+                        : formData?.[input.slug]?.[index]
                     )}
                   >
-                    {input.options?.map((option) => (
-                      <option
-                        key={option.id}
-                        value={option.id}
-                        className="px-0.5"
-                      >
-                        {input.slug === "category"
-                          ? option.name + " - " + option.code
-                          : option.name}
-                      </option>
-                    ))}
+                    {input.slug === "category" &&
+                    formData?.subCategoryIds?.[index]
+                      ? input.options?.map((option) => {
+                          if (formData?.categoryIds?.[index] === option.id) {
+                            return option.sub_categories.map((subOption) => (
+                              <option key={subOption.id} value={subOption.id}>
+                                {subOption.name} - {subOption.code}
+                              </option>
+                            ));
+                          }
+                        })
+                      : input.slug === "category" &&
+                        formData?.categoryIds?.[index]
+                      ? input.options?.map((option) => (
+                          <option key={option.id} value={option.id}>
+                            {option.name}
+                          </option>
+                        ))
+                      : input.options?.map((option) => (
+                          <option key={option.id} value={option.id}>
+                            {option.name}
+                          </option>
+                        ))}
                   </select>
                 </div>
               )

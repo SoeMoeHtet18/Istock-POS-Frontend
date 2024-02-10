@@ -17,8 +17,8 @@ import { useGetAllCategoriesQuery } from "../../../../tools/api-services/categor
 export const StockContent = () => {
   const [dataLength, setDataLength] = useState(0);
   const [formData, setFormData] = useState({});
-  const [category, setCategory] = useState({});
-  const [subCategory, setSubCategory] = useState({});
+  const [category, setCategory] = useState(null);
+  const [subCategory, setSubCategory] = useState(null);
   const [editIndex, setEditIndex] = useState(null);
   const [editingSlug, setEditingSlug] = useState("");
   const [isDataCatched, setIsDataCatched] = useState(false);
@@ -29,7 +29,10 @@ export const StockContent = () => {
     isLoading,
     isSuccess: isStockSuccess,
     refetch: refetchStocks,
-  } = useGetAllStocksQuery();
+  } = useGetAllStocksQuery({
+    categoryId: category != null ? category.id : "",
+    subCategoryId: subCategory != null ? subCategory.id : "",
+  });
 
   const { data: categories, refetch: refetchAllCategories } =
     useGetAllCategoriesQuery();
@@ -38,7 +41,6 @@ export const StockContent = () => {
 
   useEffect(() => {
     if (stocks) {
-      console.log(stocks);
       setFormData(() => ({
         ids: stocks.map((stock) => stock.id) ?? [],
         code: stocks.map((stock) => stock.barcode) ?? [],
@@ -124,7 +126,7 @@ export const StockContent = () => {
       formData.salePriceThree ? JSON.stringify(formData.salePriceThree) : []
     );
     form.append("images", formData.image ?? []);
-
+    console.log(formData.image);
     createStock(form);
   };
 
@@ -147,7 +149,11 @@ export const StockContent = () => {
   ];
 
   useEffect(() => {
-    if (isStockSuccess && !isDataCatched) {
+    setIsDataCatched(false);
+  }, [stocks]);
+
+  useEffect(() => {
+    if (isStockSuccess && !isDataCatched && categories) {
       const dataFillLength = dataLength < 10 ? 10 : dataLength;
       const newRows = [];
       for (let i = 0; i <= dataFillLength; i++) {
@@ -159,6 +165,7 @@ export const StockContent = () => {
             onDataLengthChange={handleDataChange}
             formData={formData}
             setFormData={setFormData}
+            categories={categories}
             category={category}
             subCategory={subCategory}
             editIndex={editIndex}
@@ -170,7 +177,7 @@ export const StockContent = () => {
       setRows(newRows);
       setIsDataCatched(true);
     }
-  }, [formData]);
+  }, [formData, setIsDataCatched, categories]);
 
   useEffect(() => {
     setRows((prevRows) => {
@@ -185,6 +192,7 @@ export const StockContent = () => {
             onDataLengthChange={handleDataChange}
             formData={formData}
             setFormData={setFormData}
+            categories={categories}
             category={category}
             subCategory={subCategory}
             editIndex={editIndex}
@@ -202,6 +210,7 @@ export const StockContent = () => {
             onDataLengthChange={handleDataChange}
             formData={formData}
             setFormData={setFormData}
+            categories={categories}
             category={category}
             subCategory={subCategory}
             editIndex={editIndex}
@@ -212,7 +221,7 @@ export const StockContent = () => {
       }
       return updatedRows;
     });
-  }, [dataLength, category, editingSlug, formData, subCategory]);
+  }, [dataLength, category, editingSlug, formData, subCategory, categories]);
 
   useEffect(() => {
     setRows((prevRows) => {
@@ -225,6 +234,7 @@ export const StockContent = () => {
           onDataLengthChange={handleDataChange}
           formData={formData}
           setFormData={setFormData}
+          categories={categories}
           category={category}
           subCategory={subCategory}
           editIndex={editIndex}
@@ -234,18 +244,30 @@ export const StockContent = () => {
       );
       return updatedRows;
     });
-  }, [editIndex, category, editingSlug, formData, subCategory]);
+  }, [editIndex, category, editingSlug, formData, subCategory, categories]);
+
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
 
   const refetchDataAndCacheCategory = (category) => {
     setCategory(category);
     setSubCategory(null);
-    refetchStocks();
+    console.log("category fetched");
+    refetchStocks({
+      categoryId: category != null ? category.id : "",
+      subCategoryId: "",
+    });
   };
 
   const refetchDataAndCacheSubCategory = (subCategory, category) => {
     setCategory(category);
     setSubCategory(subCategory);
-    refetchStocks();
+    console.log("subcategory fetched");
+    refetchStocks({
+      categoryId: "",
+      subCategoryId: subCategory != null ? subCategory.id : "",
+    });
   };
 
   return (

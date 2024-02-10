@@ -14,8 +14,8 @@ export const stockApi = createApi({
   tagTypes: ["Stock"],
   endpoints: (builder) => ({
     getAllStocks: builder.query({
-      query: () => ({
-        url: "/products",
+      query: ({ categoryId, subCategoryId }) => ({
+        url: `/products?category=${categoryId}&subcategory=${subCategoryId}`,
       }),
       transformResponse: (response) => response.data.data,
     }),
