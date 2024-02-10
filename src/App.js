@@ -5,11 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Login from "./pages/Login";
 import Main from "./pages/{overview}";
 import { getToken } from "./tools/reducers/authReducer";
-
-import "preline/preline";
 import { SetUp } from "./pages/SetUp";
-
-window.HSStaticMethods = window.HSStaticMethods || {};
 
 const router = createBrowserRouter([
   {

@@ -11,14 +11,14 @@ export const SetUp = () => {
       content: <StockContent />,
     },
     {
-      title: "Sale Order",
-      slug: "sale_order",
+      title: "Supplier",
+      slug: "supplier",
       content: <div>This is Testing</div>,
     },
 
     {
-      title: "Return In",
-      slug: "return_in",
+      title: "Customer",
+      slug: "customer",
       content: <div>This is Testing</div>,
     },
 
@@ -29,8 +29,18 @@ export const SetUp = () => {
     },
 
     {
-      title: "Stock Exchange",
-      slug: "stock_exchange",
+      title: "Location",
+      slug: "location",
+      content: <div>This is Testing</div>,
+    },
+    {
+      title: "Township",
+      slug: "township",
+      content: <div>This is Testing</div>,
+    },
+    {
+      title: "User Rights",
+      slug: "user_rights",
       content: <div>This is Testing</div>,
     },
   ];
