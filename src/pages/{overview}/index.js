@@ -5,14 +5,14 @@ import { useEffect } from "react";
 import FilterBox from "../../components/common/filters/FilterBox";
 import MainContent from "../../components/layout/mainContent";
 import ShopContent from "../../components/contents/shopContent";
-import { IStaticMethods } from "preline/preline";
-window.HSStaticMethods = IStaticMethods || {};
 
 function Main() {
   const location = useLocation();
 
   useEffect(() => {
-    window.HSStaticMethods.autoInit();
+    if (typeof window.HSStaticMethods.autoInit === "function") {
+      window.HSStaticMethods.autoInit();
+    }
   }, [location.pathname]);
 
   const tabs = {

@@ -6,6 +6,8 @@ import Login from "./pages/Login";
 import Main from "./pages/{overview}";
 import { getToken } from "./tools/reducers/authReducer";
 import { SetUp } from "./pages/SetUp";
+import { IStaticMethods } from "preline/preline";
+window.HSStaticMethods = IStaticMethods || {};
 
 const router = createBrowserRouter([
   {
