@@ -1,20 +1,11 @@
 import { useLocation } from "react-router-dom";
 import NavBar from "../../components/layout/navBar";
 import SideBar from "../../components/layout/sideBar";
-import { useEffect } from "react";
 import FilterBox from "../../components/common/filters/FilterBox";
 import MainContent from "../../components/layout/mainContent";
 import ShopContent from "../../components/contents/shopContent";
 
 function Main() {
-  const location = useLocation();
-
-  useEffect(() => {
-    if (typeof window.HSStaticMethods.autoInit === "function") {
-      window.HSStaticMethods.autoInit();
-    }
-  }, [location.pathname]);
-
   const tabs = {
     sale: [
       {
