@@ -14,6 +14,7 @@ import { HSStaticMethods } from "preline/preline";
 import { StockContent } from "./components/setup/contents/StockContent";
 import { SupplierContent } from "./components/setup/contents/SupplierContent";
 import { LocationContent } from "./components/setup/contents/LocationContent";
+import { TownshipContent } from "./components/setup/contents/TownshipContent";
 
 window.HSStaticMethods = HSStaticMethods || {};
 
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
           {
             path: "location",
             element: <LocationContent />,
+          },
+          {
+            path: "township",
+            element: <TownshipContent />,
           },
         ],
       },

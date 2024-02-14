@@ -42,7 +42,7 @@ export const NavItem = ({
       >
         {icon}
         <h3 className="ms-1 text-sm">
-          {item ? item.name + " - " + item.code : title}
+          {title ?? item.name + " - " + item.code}
         </h3>
       </button>
 

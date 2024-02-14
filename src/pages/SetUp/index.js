@@ -18,11 +18,11 @@ export const SetUp = () => {
       // content: <SupplierContent />,
     },
 
-    {
-      title: "Customer",
-      slug: "customer",
-      // content: <div>This is Testing</div>,
-    },
+    // {
+    //   title: "Customer",
+    //   slug: "customer",
+    //   // content: <div>This is Testing</div>,
+    // },
 
     {
       title: "Location",
