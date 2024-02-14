@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React from "react";
 
 export const Content = ({
@@ -8,6 +9,7 @@ export const Content = ({
   dataLength,
   detail,
   bottomNavBtns,
+  width,
 }) => {
   return (
     <div className="flex h-full">
@@ -15,16 +17,21 @@ export const Content = ({
         <div className="flex h-7h">
           <div className="flex flex-col h-full">
             <h2 className="text-md h-1/2h">{pageTitle}</h2>
-            {navBar}
+            {navBar ?? ""}
           </div>
           <div className="ms-1 h-full flex flex-col">
             <div className="h-1/2h"></div>
-            <div className="w-5.8w border relative flex-1">
+            <div
+              className={clsx(
+                width ? width : "w-5.8w",
+                "border relative flex-1"
+              )}
+            >
               <span className="top-letter">{tableTitle}</span>
               <div
                 style={{ width: "98%", height: "95%", margin: "15px auto 0" }}
               >
-                {dataTable}
+                {dataTable ?? ""}
               </div>
             </div>
           </div>
@@ -37,7 +44,7 @@ export const Content = ({
             <button className="text-red-500 border w-min px-3">Brand</button>
           </div>
           <div className="flex gap-x-8 absolute w-full bottom-0">
-            {bottomNavBtns.map((btn) => (
+            {bottomNavBtns?.map((btn) => (
               <button
                 key={btn.name}
                 className="cursor-pointer flex gap-x-3"
@@ -52,7 +59,7 @@ export const Content = ({
       </div>
       <div className="ms-1">
         <div className="h-1/2h"></div>
-        <div className="w-2.5w">{detail}</div>
+        <div className={clsx(detail ? "w-2.5w" : "")}>{detail ?? ""}</div>
       </div>
     </div>
   );

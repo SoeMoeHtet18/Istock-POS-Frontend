@@ -2,9 +2,11 @@ import React, { useRef } from "react";
 import { FormDialog } from "../layout/formDialog";
 import { TextField } from "@mui/material";
 
-export const ClassFormDialog = ({ open, handleClose, apiCall }) => {
+export const ClassFormDialog = ({ label, open, handleClose, apiCall }) => {
   const nameRef = useRef(null);
   const codeRef = useRef(null);
+
+  const labelName = `${label} Name`;
 
   const inputs = [
     <TextField
@@ -13,7 +15,7 @@ export const ClassFormDialog = ({ open, handleClose, apiCall }) => {
       margin="dense"
       id="name"
       name="name"
-      label="Class Name"
+      label={labelName}
       type="text"
       fullWidth
       variant="standard"
@@ -39,7 +41,7 @@ export const ClassFormDialog = ({ open, handleClose, apiCall }) => {
         handleClose={handleClose}
         apiCall={apiCall}
         inputs={inputs}
-        type="Class"
+        type={labelName}
       />
     </div>
   );

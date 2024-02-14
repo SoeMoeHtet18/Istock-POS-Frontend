@@ -71,7 +71,7 @@ export const NavItem = ({
                     <MenuItem
                       key={option.name}
                       onClick={option.onClick}
-                      data-id={parentItem?.id ?? item.id}
+                      data-id={parentItem?.id ?? item?.id}
                     >
                       {option.name}
                     </MenuItem>

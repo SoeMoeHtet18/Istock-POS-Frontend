@@ -2,6 +2,7 @@ import React from "react";
 import { AppBar } from "../../components/setup/layout/AppBar";
 import { StockContent } from "../../components/setup/contents/StockContent";
 import { MainContent } from "../../components/setup/layout/mainContent";
+import { LocationContent } from "../../components/setup/contents/LocationContent";
 
 export const SetUp = () => {
   const tabs = [
@@ -31,7 +32,7 @@ export const SetUp = () => {
     {
       title: "Location",
       slug: "location",
-      content: <div>This is Testing</div>,
+      content: <LocationContent />,
     },
     {
       title: "Township",

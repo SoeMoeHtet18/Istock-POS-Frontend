@@ -9,17 +9,15 @@ import {
 } from "@mui/material";
 import { useGetAllCategoriesQuery } from "../../../tools/api-services/categoryApi";
 
-export const CategoryFormDialog = ({ open, handleClose, apiCall, classId }) => {
-  const { data, error, isLoading } = useGetAllCategoriesQuery();
-
-  const categoryOptions =
-    data &&
-    data.map((category) => (
-      <MenuItem key={category.id} value={category.id}>
-        {`${category.name} - ${category.code}`}
-      </MenuItem>
-    ));
-
+export const CategoryFormDialog = ({
+  label,
+  supLabel,
+  supOptions,
+  open,
+  handleClose,
+  apiCall,
+  classId,
+}) => {
   const inputs = [
     <TextField
       key="name"
@@ -28,13 +26,13 @@ export const CategoryFormDialog = ({ open, handleClose, apiCall, classId }) => {
       margin="dense"
       id="name"
       name="name"
-      label="Category Name"
+      label={`${label} Name`}
       type="text"
       fullWidth
       variant="standard"
     />,
     <FormControl key="classSelect" fullWidth variant="standard" required>
-      <InputLabel id="demo-simple-select-label">Class Name</InputLabel>
+      <InputLabel id="demo-simple-select-label">{supLabel} Name</InputLabel>
       <Select
         labelId="demo-simple-select-label"
         id="demo-simple-select"
@@ -42,7 +40,7 @@ export const CategoryFormDialog = ({ open, handleClose, apiCall, classId }) => {
         label="Class Name"
         value={classId}
       >
-        {categoryOptions}
+        {supOptions}
       </Select>
     </FormControl>,
     <TextField

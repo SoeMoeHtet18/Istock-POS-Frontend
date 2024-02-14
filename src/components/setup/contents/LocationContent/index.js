@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
-import DataTable from "../../layout/table";
 import { Content } from "../../layout/content";
-import StockTableInput from "../../tableInputs/StockTableInput";
+import { LocationNavBar } from "../../navBars/LocationNavBar";
+import DataTable from "../../layout/table";
 import {
-  useCreateStockMutation,
-  useGetAllStocksQuery,
-} from "../../../../tools/api-services/stockApi";
-import { StockNavBar } from "../../navBars/StockNavBar";
-import { StockDetail } from "../../sideDetails/StockDetail";
-import { useGetAllCategoriesQuery } from "../../../../tools/api-services/categoryApi";
+  useCreateShopMutation,
+  useGetAllShopsQuery,
+} from "../../../../tools/api-services/shopApi";
+import { useGetAllBranchesQuery } from "../../../../tools/api-services/branchApi";
+import LocationTableInput from "../../tableInputs/LocationTableInput";
 
-export const StockContent = () => {
+export const LocationContent = () => {
   const [dataLength, setDataLength] = useState(0);
   const [formData, setFormData] = useState({});
   const [category, setCategory] = useState(null);
@@ -20,44 +19,44 @@ export const StockContent = () => {
   const [isDataCatched, setIsDataCatched] = useState(false);
 
   const {
-    data: stocks,
+    data: shops,
     error,
     isLoading,
-    isSuccess: isStockSuccess,
-    refetch: refetchStocks,
-  } = useGetAllStocksQuery({
+    isSuccess: isShopsFetched,
+    refetch: refetchShops,
+  } = useGetAllShopsQuery({
     categoryId: category != null ? category.id : "",
     subCategoryId: subCategory != null ? subCategory.id : "",
   });
 
   const { data: categories, refetch: refetchAllCategories } =
-    useGetAllCategoriesQuery();
+    useGetAllBranchesQuery();
 
-  const [createStock, { isSuccess }] = useCreateStockMutation();
+  const [createShop, { isSuccess }] = useCreateShopMutation();
 
   useEffect(() => {
-    if (stocks) {
+    if (shops) {
       setFormData(() => ({
-        ids: stocks.map((stock) => stock.id) ?? [],
-        code: stocks.map((stock) => stock.barcode) ?? [],
-        description: stocks.map((stock) => stock.name) ?? [],
-        short: stocks.map((stock) => stock.short_name) ?? [],
-        categoryIds: stocks.map((stock) => stock.category_id) ?? [],
-        subCategoryIds: stocks.map((stock) => stock.sub_category_id) ?? [],
-        brand: stocks.map((stock) => stock.brand) ?? [],
-        purchaseCurrency: stocks.map((stock) => stock.purchase_currency) ?? [],
-        purchasePrice: stocks.map((stock) => stock.purchase_price) ?? [],
-        supplierCurrency: stocks.map((stock) => stock.supplier_currency) ?? [],
-        salePrice: stocks.map((stock) => stock.sale_price) ?? [],
-        salePriceOne: stocks.map((stock) => stock.sale_price_one) ?? [],
-        salePriceTwo: stocks.map((stock) => stock.sale_price_two) ?? [],
-        salePriceThree: stocks.map((stock) => stock.sale_price_three) ?? [],
-        gp: stocks.map((stock) => stock.gp) ?? [],
-        image: stocks.map((stock) => stock.image) ?? [],
+        ids: shops.map((shop) => shop.id) ?? [],
+        code: shops.map((shop) => shop.barcode) ?? [],
+        description: shops.map((shop) => shop.name) ?? [],
+        short: shops.map((shop) => shop.short_name) ?? [],
+        categoryIds: shops.map((shop) => shop.category_id) ?? [],
+        subCategoryIds: shops.map((shop) => shop.sub_category_id) ?? [],
+        brand: shops.map((shop) => shop.brand) ?? [],
+        purchaseCurrency: shops.map((shop) => shop.purchase_currency) ?? [],
+        purchasePrice: shops.map((shop) => shop.purchase_price) ?? [],
+        supplierCurrency: shops.map((shop) => shop.supplier_currency) ?? [],
+        salePrice: shops.map((shop) => shop.sale_price) ?? [],
+        salePriceOne: shops.map((shop) => shop.sale_price_one) ?? [],
+        salePriceTwo: shops.map((shop) => shop.sale_price_two) ?? [],
+        salePriceThree: shops.map((shop) => shop.sale_price_three) ?? [],
+        gp: shops.map((shop) => shop.gp) ?? [],
+        image: shops.map((shop) => shop.image) ?? [],
       }));
-      setDataLength(stocks.length);
+      setDataLength(shops.length);
     }
-  }, [stocks]);
+  }, [shops]);
 
   const handleDataChange = (index) => {
     setDataLength((prevDataLength) =>
@@ -66,20 +65,17 @@ export const StockContent = () => {
   };
 
   const theads = [
-    { title: "Code", width: "14%" },
-    { title: "Description", width: "20%" },
-    { title: "Short", width: "10%" },
-    { title: "Category", width: "10%" },
-    { title: "PCurr", width: "8%" },
-    { title: "PurPrice", width: "15%" },
-    { title: "SCurr", width: "8%" },
-    { title: "Sale Price", width: "15%" },
-    { title: "GP", width: "5%" },
+    { title: "Name", width: "20%" },
+    { title: "Short", width: "15%" },
+    { title: "Location Group", width: "20%" },
+    { title: "Branch", width: "20%" },
+    { title: "Sort Code", width: "20%" },
+    { title: "Diff SP", width: "5%" },
   ];
 
   const [rows, setRows] = useState([]);
 
-  const createBulkStocks = () => {
+  const createBulkShops = () => {
     const form = new FormData();
 
     form.append("ids", formData.ids ? JSON.stringify(formData.ids) : []);
@@ -122,15 +118,15 @@ export const StockContent = () => {
       formData.salePriceThree ? JSON.stringify(formData.salePriceThree) : []
     );
     form.append("images", formData.image ?? []);
-    console.log(formData.image);
-    createStock(form);
+
+    createShop(form);
   };
 
   const bottomNavBtns = [
     {
       name: "Confirm",
       key: "F5",
-      onClick: createBulkStocks,
+      onClick: createBulkShops,
     },
     {
       name: "Delete",
@@ -146,15 +142,15 @@ export const StockContent = () => {
 
   useEffect(() => {
     setIsDataCatched(false);
-  }, [stocks]);
+  }, [shops]);
 
   useEffect(() => {
-    if (isStockSuccess && !isDataCatched && categories) {
+    if (isShopsFetched && !isDataCatched && categories) {
       const dataFillLength = dataLength < 10 ? 10 : dataLength;
       const newRows = [];
       for (let i = 0; i <= dataFillLength; i++) {
         newRows.push(
-          <StockTableInput
+          <LocationTableInput
             key={`row-${i}`}
             index={i}
             dataLength={dataLength}
@@ -181,7 +177,7 @@ export const StockContent = () => {
       if (editIndex < updatedRows.length) {
         // Update the specific row at the given index
         updatedRows[editIndex] = (
-          <StockTableInput
+          <LocationTableInput
             key={`row-${dataLength}`}
             index={dataLength}
             dataLength={dataLength}
@@ -199,7 +195,7 @@ export const StockContent = () => {
       } else {
         // Add a new row if the dataLength exceeds the current row count
         updatedRows.push(
-          <StockTableInput
+          <LocationTableInput
             key={`row-${dataLength}`}
             index={dataLength}
             dataLength={dataLength}
@@ -227,10 +223,15 @@ export const StockContent = () => {
     categories,
   ]);
 
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
+
   const refetchDataAndCacheCategory = (category) => {
     setCategory(category);
     setSubCategory(null);
-    refetchStocks({
+    console.log("category fetched");
+    refetchShops({
       categoryId: category != null ? category.id : "",
       subCategoryId: "",
     });
@@ -239,37 +240,20 @@ export const StockContent = () => {
   const refetchDataAndCacheSubCategory = (subCategory, category) => {
     setCategory(category);
     setSubCategory(subCategory);
-    refetchStocks({
+    console.log("subcategory fetched");
+    refetchShops({
       categoryId: "",
       subCategoryId: subCategory != null ? subCategory.id : "",
     });
   };
-
   return (
     <Content
-      pageTitle={"Stock"}
-      tableTitle={"Stock List"}
-      navBar={
-        <StockNavBar
-          onCategoryClick={refetchDataAndCacheCategory}
-          onSubCategoryClick={refetchDataAndCacheSubCategory}
-          categories={categories}
-          refetchCategories={refetchAllCategories}
-        />
-      }
+      width={"w-7.5w"}
+      pageTitle={"Location"}
+      tableTitle={"Location"}
+      navBar={<LocationNavBar />}
       dataTable={<DataTable theads={theads} tRows={rows} />}
       dataLength={dataLength}
-      detail={
-        <StockDetail
-          categories={categories}
-          category={category}
-          subCategory={subCategory}
-          index={editIndex}
-          formData={formData}
-          setFormData={setFormData}
-          setEditingSlug={setEditingSlug}
-        />
-      }
       bottomNavBtns={bottomNavBtns}
     />
   );

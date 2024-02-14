@@ -4,6 +4,9 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 import authSlice from "../reducers/authReducer";
 import { categoryApi } from "../api-services/categoryApi";
 import { subCategoryApi } from "../api-services/subCategoryApi";
+import { branchApi } from "../api-services/branchApi";
+import { locationApi } from "../api-services/locationApi";
+import { shopApi } from "../api-services/shopApi";
 
 const store = configureStore({
   reducer: {
@@ -11,12 +14,18 @@ const store = configureStore({
     [stockApi.reducerPath]: stockApi.reducer,
     [categoryApi.reducerPath]: categoryApi.reducer,
     [subCategoryApi.reducerPath]: subCategoryApi.reducer,
+    [branchApi.reducerPath]: branchApi.reducer,
+    [locationApi.reducerPath]: locationApi.reducer,
+    [shopApi.reducerPath]: shopApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
       stockApi.middleware,
       categoryApi.middleware,
-      subCategoryApi.middleware
+      subCategoryApi.middleware,
+      branchApi.middleware,
+      locationApi.middleware,
+      shopApi.middleware
     ),
 });
 

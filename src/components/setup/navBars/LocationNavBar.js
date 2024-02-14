@@ -4,40 +4,41 @@ import { BiCategoryAlt } from "react-icons/bi";
 import { MdOutlineCategory } from "react-icons/md";
 import { NavItem } from "../layout/navItem";
 import { NavBar } from "../layout/navBar";
-import {
-  useCreateCategoryMutation,
-  useGetAllCategoriesQuery,
-} from "../../../tools/api-services/categoryApi";
-import { useCreateSubCategoryMutation } from "../../../tools/api-services/subCategoryApi";
 import { ClassFormDialog } from "../formDialogs/ClassFormDialog";
 import { CategoryFormDialog } from "../formDialogs/CategoryFormDialog";
+import {
+  useCreateBranchMutation,
+  useGetAllBranchesQuery,
+} from "../../../tools/api-services/branchApi";
+import { useCreateLocationMutation } from "../../../tools/api-services/locationApi";
 import { MenuItem } from "@mui/material";
 
-export const StockNavBar = ({
+export const LocationNavBar = ({
   onCategoryClick,
   onSubCategoryClick,
-  categories,
-  refetchCategories,
+  branches,
+  refetchBranches,
 }) => {
-  const [navItems, setNavItems] = useState([]);
+  const [navItems, setNavItems] = useState(branches);
   const [classFormOpen, setClassFormOpen] = useState(false);
   const [categoryFormOpen, setCategoryFormOpen] = useState(false);
   const [parentClassId, setParentClassId] = useState(0);
 
-  const [createCategory, { isSuccess }] = useCreateCategoryMutation();
+  const [createBranch, { isSuccess }] = useCreateBranchMutation();
 
-  const [createSubCategory, { isSuccess: subIsSuccess }] =
-    useCreateSubCategoryMutation();
+  const [createLocation, { isSuccess: subIsSuccess }] =
+    useCreateLocationMutation();
 
   useEffect(() => {
     if (isSuccess || subIsSuccess) {
-      refetchCategories();
+      refetchBranches();
     }
   }, [isSuccess, subIsSuccess]);
 
-  useEffect(() => {
-    setNavItems(categories);
-  }, [categories]);
+  // if branches are not synced with cmt out this
+  //   useEffect(() => {
+  //     setNavItems(branches);
+  //   }, [branches]);
 
   const openClassForm = () => setClassFormOpen(true);
   const openCategoryForm = (e) => {
@@ -50,32 +51,32 @@ export const StockNavBar = ({
 
   const titleOptions = [
     {
-      name: "New Class",
+      name: "New Branch",
       onClick: openClassForm,
     },
-    { name: "Print Class", onClick: () => {} },
+    { name: "Print Branch", onClick: () => {} },
   ];
 
   const classOptions = [
     {
-      name: "New Class",
+      name: "New Branch",
       onClick: openClassForm,
     },
-    { name: "Edit Class", onClick: () => {} },
-    { name: "Delete Class", onClick: () => {}, isBreak: true },
-    { name: "New Category", onClick: openCategoryForm },
-    { name: "Print Category", onClick: () => {}, isBreak: true },
-    { name: "Merge Class", onClick: () => {} },
+    { name: "Edit Branch", onClick: () => {} },
+    { name: "Delete Branch", onClick: () => {}, isBreak: true },
+    { name: "New Location Group", onClick: openCategoryForm },
+    { name: "Print Location Group", onClick: () => {}, isBreak: true },
+    { name: "Merge Branch", onClick: () => {} },
   ];
 
   const categoryOptions = [
     {
-      name: "New Category",
+      name: "New Location Group",
       onClick: openCategoryForm,
     },
     { name: "Edit", onClick: () => {} },
     { name: "Delete", onClick: () => {}, isBreak: true },
-    { name: "Merge Category", onClick: () => {} },
+    { name: "Merge Location Group", onClick: () => {} },
   ];
 
   const renderNavOptions = () => {
@@ -83,7 +84,7 @@ export const StockNavBar = ({
 
     return navItems.map((item) => (
       <div key={item.name + item.code} className="flex flex-col">
-        {/* Categories */}
+        {/* Branches */}
         <NavItem
           item={item}
           options={classOptions}
@@ -92,7 +93,7 @@ export const StockNavBar = ({
           onClick={onCategoryClick}
         />
 
-        {/* Sub-categories */}
+        {/* Location Groups */}
         {item.sub_categories?.length > 0 &&
           item.sub_categories.map((sub_item) => (
             <NavItem
@@ -111,35 +112,35 @@ export const StockNavBar = ({
 
   const renderedNavItems = (
     <>
-      <NavItem title="Stock" options={titleOptions} icon={<FaHome />} />
+      <NavItem title="Branch" options={titleOptions} icon={<FaHome />} />
       {renderNavOptions()}
     </>
   );
 
-  const { data, error, isLoading } = useGetAllCategoriesQuery();
+  const { data, error, loading } = useGetAllBranchesQuery();
 
   const optionsForCategoryForm =
     data &&
-    data.map((category) => (
-      <MenuItem key={category.id} value={category.id}>
-        {`${category.name} - ${category.code}`}
+    data.map((branch) => (
+      <MenuItem key={branch.id} value={branch.id}>
+        {`${branch.name} - ${branch.code}`}
       </MenuItem>
     ));
 
   const forms = [
     <ClassFormDialog
-      label="Class"
+      label="Branch"
       open={classFormOpen}
       handleClose={() => setClassFormOpen(false)}
-      apiCall={createCategory}
+      apiCall={createBranch}
     />,
     <CategoryFormDialog
-      label="Category"
-      supLabel="Class"
+      label="Location Group"
+      supLabel="Branch"
       supOptions={optionsForCategoryForm}
       open={categoryFormOpen}
       handleClose={() => setCategoryFormOpen(false)}
-      apiCall={createSubCategory}
+      apiCall={createLocation}
       classId={parentClassId}
     />,
   ];

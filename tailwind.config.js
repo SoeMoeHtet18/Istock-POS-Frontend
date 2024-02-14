@@ -15,6 +15,7 @@ module.exports = {
         "2.5w": "25vw",
         "5.8w": "58vw",
         "6w": "60vw",
+        "7.5w": "75vw",
       },
       height: {
         "1/2h": "5vh",

@@ -38,7 +38,6 @@ function Root() {
   let path = location.pathname;
 
   useEffect(() => {
-    console.log("page reload");
     window.HSStaticMethods.autoInit();
 
     if (path !== "/login" && path !== "/logout") {
@@ -50,7 +49,6 @@ function Root() {
     }
   }, [path, authState.token]);
 
-  // Render the corresponding component based on the current path
   let Component;
   switch (path) {
     case "/login":
@@ -60,7 +58,7 @@ function Root() {
       Component = SetUp;
       break;
     default:
-      Component = Main; // Assuming Main is your default component
+      Component = Main;
   }
 
   return <Component />;
