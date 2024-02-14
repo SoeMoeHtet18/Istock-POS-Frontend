@@ -2,15 +2,18 @@
 import React, { useEffect } from "react";
 import {
   createBrowserRouter,
+  Outlet,
   RouterProvider,
   useLocation,
 } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import Login from "./pages/Login";
-import Main from "./pages/{overview}";
 import { getToken } from "./tools/reducers/authReducer";
 import { SetUp } from "./pages/SetUp";
 import { HSStaticMethods } from "preline/preline";
+import { StockContent } from "./components/setup/contents/StockContent";
+import { SupplierContent } from "./components/setup/contents/SupplierContent";
+import { LocationContent } from "./components/setup/contents/LocationContent";
 
 window.HSStaticMethods = HSStaticMethods || {};
 
@@ -22,6 +25,20 @@ const router = createBrowserRouter([
       {
         path: "setup",
         element: <SetUp />,
+        children: [
+          {
+            path: "stock",
+            element: <StockContent />,
+          },
+          {
+            path: "supplier",
+            element: <SupplierContent />,
+          },
+          {
+            path: "location",
+            element: <LocationContent />,
+          },
+        ],
       },
     ],
   },
@@ -49,19 +66,7 @@ function Root() {
     }
   }, [path, authState.token]);
 
-  let Component;
-  switch (path) {
-    case "/login":
-      Component = Login;
-      break;
-    case "/setup":
-      Component = SetUp;
-      break;
-    default:
-      Component = Main;
-  }
-
-  return <Component />;
+  return <Outlet />;
 }
 
 export default function App() {
