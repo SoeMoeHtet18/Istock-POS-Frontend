@@ -8,8 +8,9 @@ import {
 } from "../../../../tools/api-services/shopApi";
 import { useGetAllBranchesQuery } from "../../../../tools/api-services/branchApi";
 import LocationTableInput from "../../tableInputs/LocationTableInput";
+import SupplierTableInput from "../../tableInputs/SupplierTableInput";
 
-export const LocationContent = () => {
+export const SupplierContent = () => {
   const [dataLength, setDataLength] = useState(0);
   const [formData, setFormData] = useState({});
   const [category, setCategory] = useState(null);
@@ -65,17 +66,17 @@ export const LocationContent = () => {
   };
 
   const theads = [
-    { title: "Name", width: "20%" },
-    { title: "Short", width: "15%" },
-    { title: "Location Group", width: "20%" },
-    { title: "Branch", width: "20%" },
-    { title: "Sort Code", width: "20%" },
-    { title: "Diff SP", width: "5%" },
+    { title: "Name", width: "25%" },
+    { title: "Short", width: "20%" },
+    { title: "Address", width: "25%" },
+    { title: "Credit", width: "10%", center: true },
+    { title: "Consign", width: "10%", center: true },
+    { title: "Inactive", width: "10%", center: true },
   ];
 
   const [rows, setRows] = useState([]);
 
-  const createBulkShops = () => {
+  const createBulkSuppliers = () => {
     const form = new FormData();
 
     form.append("ids", formData.ids ? JSON.stringify(formData.ids) : []);
@@ -126,7 +127,7 @@ export const LocationContent = () => {
     {
       name: "Confirm",
       key: "F5",
-      onClick: createBulkShops,
+      onClick: createBulkSuppliers,
     },
     {
       name: "Delete",
@@ -150,7 +151,7 @@ export const LocationContent = () => {
       const newRows = [];
       for (let i = 0; i <= dataFillLength; i++) {
         newRows.push(
-          <LocationTableInput
+          <SupplierTableInput
             key={`row-${i}`}
             index={i}
             dataLength={dataLength}
@@ -177,7 +178,7 @@ export const LocationContent = () => {
       if (editIndex < updatedRows.length) {
         // Update the specific row at the given index
         updatedRows[editIndex] = (
-          <LocationTableInput
+          <SupplierTableInput
             key={`row-${dataLength}`}
             index={dataLength}
             dataLength={dataLength}
@@ -195,7 +196,7 @@ export const LocationContent = () => {
       } else {
         // Add a new row if the dataLength exceeds the current row count
         updatedRows.push(
-          <LocationTableInput
+          <SupplierTableInput
             key={`row-${dataLength}`}
             index={dataLength}
             dataLength={dataLength}
@@ -248,17 +249,8 @@ export const LocationContent = () => {
   };
   return (
     <Content
-      width={"w-7.5w"}
-      pageTitle={"Location"}
-      tableTitle={"Location"}
-      navBar={
-        <LocationNavBar
-          onCategoryClick={refetchDataAndCacheCategory}
-          onSubCategoryClick={refetchDataAndCacheSubCategory}
-          categories={categories}
-          refetchCategories={refetchAllCategories}
-        />
-      }
+      pageTitle={"Supplier"}
+      tableTitle={"Supplier"}
       dataTable={<DataTable theads={theads} tRows={rows} />}
       dataLength={dataLength}
       bottomNavBtns={bottomNavBtns}

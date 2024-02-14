@@ -1,6 +1,7 @@
+import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
 
-const LocationTableInput = ({
+const SupplierTableInput = ({
   index,
   dataLength,
   onDataLengthChange,
@@ -15,10 +16,10 @@ const LocationTableInput = ({
 }) => {
   const nameRef = useRef(null);
   const shortRef = useRef(null);
-  const locatonGroupRef = useRef(null);
-  const branchRef = useRef(null);
-  const sortCodeRef = useRef(null);
-  const diffSPRef = useRef(null);
+  const addressRef = useRef(null);
+  const creditRef = useRef(null);
+  const consignRef = useRef(null);
+  const inactiveRef = useRef(null);
 
   const tcells = [
     {
@@ -32,25 +33,23 @@ const LocationTableInput = ({
       type: "text",
     },
     {
-      ref: locatonGroupRef,
-      slug: "locatonGroup",
-      type: "select",
-      options: categories,
-    },
-    {
-      ref: branchRef,
-      slug: "branch",
-      type: "select",
-      options: categories,
-    },
-    {
-      ref: sortCodeRef,
-      slug: "sort",
+      ref: addressRef,
+      slug: "address",
       type: "text",
     },
     {
-      ref: diffSPRef,
-      slug: "diffSP",
+      ref: creditRef,
+      slug: "credit",
+      type: "checkbox",
+    },
+    {
+      ref: consignRef,
+      slug: "consign",
+      type: "checkbox",
+    },
+    {
+      ref: inactiveRef,
+      slug: "inactive",
       type: "checkbox",
     },
   ];
@@ -134,8 +133,17 @@ const LocationTableInput = ({
       case "short":
         ref = shortRef;
         break;
+      case "address":
+        ref = addressRef;
+        break;
+      case "credit":
+        ref = creditRef;
+        break;
+      case "consign":
+        ref = consignRef;
+        break;
       default:
-        ref = diffSPRef;
+        ref = inactiveRef;
         break;
     }
     // if (ref !== categoryRef) {
@@ -156,7 +164,10 @@ const LocationTableInput = ({
           }
         }
         return (
-          <td key={tcell.slug}>
+          <td
+            key={tcell.slug}
+            className={clsx(tcell.type === "checkbox" && "text-center")}
+          >
             {tcell.type === "select" ? (
               <select
                 ref={tcell.ref}
@@ -226,4 +237,4 @@ const LocationTableInput = ({
   );
 };
 
-export default LocationTableInput;
+export default SupplierTableInput;

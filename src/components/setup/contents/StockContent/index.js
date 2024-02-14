@@ -271,6 +271,9 @@ export const StockContent = () => {
         />
       }
       bottomNavBtns={bottomNavBtns}
+      switchBtn={
+        <button className="text-red-500 border w-min px-3">Brand</button>
+      }
     />
   );
 };

@@ -13,7 +13,8 @@ const DataTable = ({ theads, tRows }) => {
                   key={thead.title}
                   className={clsx(
                     index === 0 && "pl-1",
-                    index === theads.length - 1 && "pr-1"
+                    index === theads.length - 1 && "pr-1",
+                    thead.center ? "text-center" : "text-left"
                   )}
                   style={{ width: thead.width }}
                 >

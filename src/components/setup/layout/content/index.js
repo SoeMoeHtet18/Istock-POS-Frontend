@@ -10,6 +10,7 @@ export const Content = ({
   detail,
   bottomNavBtns,
   width,
+  switchBtn,
 }) => {
   return (
     <div className="flex h-full">
@@ -41,7 +42,7 @@ export const Content = ({
             <span>
               {pageTitle} Count: {dataLength}
             </span>
-            <button className="text-red-500 border w-min px-3">Brand</button>
+            {switchBtn}
           </div>
           <div className="flex gap-x-8 absolute w-full bottom-0">
             {bottomNavBtns?.map((btn) => (
