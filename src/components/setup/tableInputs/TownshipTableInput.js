@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 
 const TownshipTableInput = ({
   index,
@@ -21,26 +21,28 @@ const TownshipTableInput = ({
   const tcells = [
     {
       ref: nameRef,
-      slug: "name",
+      slug: "names",
       type: "text",
     },
     {
       ref: shortRef,
-      slug: "short",
+      slug: "shorts",
       type: "text",
     },
     {
       ref: divisionRef,
-      slug: "division",
+      slug: "divisionIds",
       type: "select",
       options: categories,
     },
     {
       ref: sortIdRef,
-      slug: "sort",
+      slug: "sortIds",
       type: "text",
     },
   ];
+
+  console.log(formData);
 
   const handleInputChange =
     (setFormData, onDataLengthChange, index, slug) => (e) => {
@@ -119,7 +121,7 @@ const TownshipTableInput = ({
             {tcell.type === "select" ? (
               <select
                 ref={tcell.ref}
-                className={`w-full ${tcell.slug + "-" + index}`}
+                className={`w-full ${valueSlug + "-" + index}`}
                 disabled={index > dataLength}
                 value={formData?.[valueSlug]?.[index] ?? ""}
                 onChange={handleInputChange(
@@ -139,14 +141,14 @@ const TownshipTableInput = ({
               <input
                 ref={tcell.ref}
                 type={tcell.type}
-                className={`w-full ${tcell.slug + "-" + index}`}
+                className={`w-full ${valueSlug + "-" + index}`}
                 disabled={index > dataLength}
-                value={formData?.[tcell.slug]?.[index] ?? ""}
+                value={formData?.[valueSlug]?.[index] ?? ""}
                 onChange={handleInputChange(
                   setFormData,
                   onDataLengthChange,
                   index,
-                  tcell.slug
+                  valueSlug
                 )}
                 onKeyDown={(e) =>
                   handleKeyDown(

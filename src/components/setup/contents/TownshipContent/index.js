@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Content } from "../../layout/content";
 import DataTable from "../../layout/table";
-import {
-  useCreateShopMutation,
-  useGetAllShopsQuery,
-} from "../../../../tools/api-services/shopApi";
-import { useGetAllBranchesQuery } from "../../../../tools/api-services/branchApi";
 import TownshipTableInput from "../../tableInputs/TownshipTableInput";
 import { TownshipNavBar } from "../../navBars/TownshipNavBar";
 import {
@@ -13,7 +8,7 @@ import {
   useGetAllTownshipsQuery,
 } from "../../../../tools/api-services/townshipApi";
 import { useGetAllDivisionsQuery } from "../../../../tools/api-services/divisionApi";
-import { dumpDivisions } from "./data";
+import { dumpDivisions, dumpTownships } from "./data";
 
 export const TownshipContent = () => {
   const [dataLength, setDataLength] = useState(0);
@@ -22,7 +17,7 @@ export const TownshipContent = () => {
   const [editIndex, setEditIndex] = useState(null);
   const [isDataCatched, setIsDataCatched] = useState(false);
 
-  const {
+  let {
     data: townships,
     error,
     isLoading,
@@ -35,7 +30,10 @@ export const TownshipContent = () => {
   let { data: divisions, refetch: refetchDivisions } =
     useGetAllDivisionsQuery();
 
+  //import dummy data
   divisions = divisions ?? dumpDivisions;
+  townships = townships ?? dumpTownships;
+  isTownshipsFetched = true;
 
   const [createTownship, { isSuccess }] = useCreateTownshipMutation();
 
@@ -111,7 +109,8 @@ export const TownshipContent = () => {
   }, [townships]);
 
   useEffect(() => {
-    if (isTownshipsFetched && !isDataCatched && divisions) {
+    // if (isTownshipsFetched && !isDataCatched && divisions) {
+    if (divisions) {
       const dataFillLength = dataLength < 10 ? 10 : dataLength;
       const newRows = [];
       for (let i = 0; i <= dataFillLength; i++) {

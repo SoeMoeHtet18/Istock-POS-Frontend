@@ -25,4 +25,14 @@ const dumpDivisions = [
   },
 ];
 
-module.exports = { dumpDivisions };
+const dumpTownships = [
+  {
+    id: 1,
+    name: "Township",
+    short_name: "T",
+    division_id: 1,
+    sort_id: 1,
+  },
+];
+
+module.exports = { dumpDivisions, dumpTownships };
