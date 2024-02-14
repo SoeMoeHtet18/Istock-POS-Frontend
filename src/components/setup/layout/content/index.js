@@ -60,7 +60,7 @@ export const Content = ({
       </div>
       <div className="ms-1">
         <div className="h-1/2h"></div>
-        <div className={clsx(detail ? "w-2.5w" : "")}>{detail ?? ""}</div>
+        {detail}
       </div>
     </div>
   );

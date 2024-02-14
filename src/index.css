@@ -55,3 +55,9 @@ code {
 .grid-2 {
   grid-template-columns: 1fr 1fr;
 }
+
+@layer utilities {
+  .flex-ver-center {
+    @apply flex items-center w-full;
+  }
+}

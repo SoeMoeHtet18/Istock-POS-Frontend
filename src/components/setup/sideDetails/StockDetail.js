@@ -85,7 +85,7 @@ export const StockDetail = ({
 
   return (
     <>
-      <div className="border relative px-2 pt-3 pb-2 mb-3">
+      <div className="border relative px-2 pt-3 pb-2 mb-3 w-2.5w">
         <span className="top-letter">Detail</span>
         <div className="flex">
           <div className="text-xs flex-1">

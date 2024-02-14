@@ -18,8 +18,9 @@ export const MainContent = ({ tabs }) => {
                 key={slug}
                 type="button"
                 className={clsx(
-                  "hs-tab-active:bg-primary-100 hs-tab-active:border-b-transparent hs-tab-active:text-dark dark:hs-tab-active:bg-gray-800 dark:hs-tab-active:border-b-gray-800 dark:hs-tab-active:text-white -mb-px inline-flex items-center justify-center gap-x-2 bg-gray-50 font-medium border-2 text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:pointer-events-none dark:bg-gray-700 dark:border-gray-700 dark:text-gray-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600 text-xs py-2",
-                  path === `/setup/${tab.slug}` && "active"
+                  "-mb-px inline-flex items-center justify-center gap-x-2 bg-gray-50 font-medium border-2 text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:pointer-events-none text-xs py-2",
+                  path === `/setup/${tab.slug}` &&
+                    "bg-primary-100 border-b-transparent text-dark"
                 )}
                 role="tab"
                 style={{ width: "120px" }}

@@ -13,7 +13,7 @@ import {
 import { useCreateLocationMutation } from "../../../tools/api-services/locationApi";
 import { MenuItem } from "@mui/material";
 
-export const LocationNavBar = ({
+export const SupplierNavBar = ({
   onCategoryClick,
   onSubCategoryClick,
   branches,
@@ -112,7 +112,7 @@ export const LocationNavBar = ({
 
   const renderedNavItems = (
     <>
-      <NavItem title="Branch" options={titleOptions} icon={<FaHome />} />
+      <NavItem title="Supplier" options={titleOptions} icon={<FaHome />} />
       {renderNavOptions()}
     </>
   );

@@ -9,6 +9,8 @@ import {
 import { useGetAllBranchesQuery } from "../../../../tools/api-services/branchApi";
 import LocationTableInput from "../../tableInputs/LocationTableInput";
 import SupplierTableInput from "../../tableInputs/SupplierTableInput";
+import { SupplierDetail } from "../../sideDetails/SupplierDetail";
+import { SupplierNavBar } from "../../navBars/SupplierNavBar";
 
 export const SupplierContent = () => {
   const [dataLength, setDataLength] = useState(0);
@@ -251,9 +253,12 @@ export const SupplierContent = () => {
     <Content
       pageTitle={"Supplier"}
       tableTitle={"Supplier"}
+      navBar={<SupplierNavBar />}
       dataTable={<DataTable theads={theads} tRows={rows} />}
       dataLength={dataLength}
       bottomNavBtns={bottomNavBtns}
+      detail={<SupplierDetail />}
+      width="w-4.1w"
     />
   );
 };
