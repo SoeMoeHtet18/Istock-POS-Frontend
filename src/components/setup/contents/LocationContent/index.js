@@ -178,8 +178,8 @@ export const LocationContent = () => {
         // Update the specific row at the given index
         updatedRows[editIndex] = (
           <LocationTableInput
-            key={`row-${dataLength}`}
-            index={dataLength}
+            key={`row-${editIndex}`}
+            index={editIndex}
             dataLength={dataLength}
             onDataLengthChange={handleDataChange}
             formData={formData}

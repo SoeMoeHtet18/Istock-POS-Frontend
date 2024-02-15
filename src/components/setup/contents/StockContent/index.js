@@ -150,6 +150,8 @@ export const StockContent = () => {
 
   useEffect(() => {
     if (isStockSuccess && !isDataCatched && categories) {
+      console.log("data cached", isDataCatched);
+
       const dataFillLength = dataLength < 10 ? 10 : dataLength;
       const newRows = [];
       for (let i = 0; i <= dataFillLength; i++) {
@@ -179,11 +181,12 @@ export const StockContent = () => {
     setRows((prevRows) => {
       const updatedRows = [...prevRows];
       if (editIndex < updatedRows.length) {
+        console.log("editing at", editIndex);
         // Update the specific row at the given index
         updatedRows[editIndex] = (
           <StockTableInput
-            key={`row-${dataLength}`}
-            index={dataLength}
+            key={`row-${editIndex}`}
+            index={editIndex}
             dataLength={dataLength}
             onDataLengthChange={handleDataChange}
             formData={formData}

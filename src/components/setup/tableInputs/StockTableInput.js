@@ -76,7 +76,7 @@ const StockTableInput = ({
     (setFormData, onDataLengthChange, index, slug) => (e) => {
       onDataLengthChange(index);
       setEditIndex(index);
-      console.log(formData?.[slug]);
+
       // Use setFormData to update the state
       setFormData((prevFormData) => {
         const updatedSlugArray = [...(prevFormData[slug] || [])]; // Create a copy of the array for the given slug
@@ -93,6 +93,8 @@ const StockTableInput = ({
           brand: updatedBrandArray,
         };
       });
+
+      console.log(formData);
     };
 
   const handleKeyDown = (
@@ -164,9 +166,47 @@ const StockTableInput = ({
         ref = categoryRef;
         break;
     }
-    if (ref !== categoryRef) {
+
+    console.log(editIndex, editingSlug, formData);
+
+    if (formData && editingSlug && editIndex) {
+      console.log("editIndex exist", editIndex);
+      if (editingSlug === "category") {
+        if (formData?.subCategoryIds?.[index]) {
+          editingSlug = "subCategoryIds";
+        } else {
+          editingSlug = "categoryIds";
+        }
+      }
       ref.current = document.querySelector(`.${editingSlug}-${editIndex}`);
-      ref.current.value = formData?.[editingSlug]?.[editIndex] ?? "";
+      if (ref.current) {
+        ref.current.value = formData?.[editingSlug]?.[editIndex] ?? "";
+      }
+      console.log(ref.current);
+    }
+
+    if (
+      formData &&
+      (editingSlug === null || editingSlug === "") &&
+      editIndex == null &&
+      editIndex !== 0
+    ) {
+      console.log("editIndex not exist", editIndex);
+      tcells.map((tcell) => {
+        let valueSlug = tcell.slug;
+        if (tcell.slug === "category") {
+          if (formData?.subCategoryIds?.[index]) {
+            valueSlug = "subCategoryIds";
+          } else {
+            valueSlug = "categoryIds";
+          }
+        }
+
+        ref.current = document.querySelector(`.${valueSlug}-${index}`);
+        if (ref.current) {
+          ref.current.value = formData?.[valueSlug]?.[index] ?? "";
+        }
+      });
     }
   }, [formData, editingSlug, editIndex]);
 
@@ -224,7 +264,6 @@ const StockTableInput = ({
                 type={tcell.type}
                 className={`w-full ${tcell.slug + "-" + index}`}
                 disabled={index > dataLength}
-                value={formData?.[tcell.slug]?.[index] ?? ""}
                 onChange={handleInputChange(
                   setFormData,
                   onDataLengthChange,
@@ -242,7 +281,10 @@ const StockTableInput = ({
                     setFormData
                   )
                 }
-                onFocus={() => setEditIndex(index)}
+                onFocus={() => {
+                  setEditIndex(index);
+                  console.log("focus", index);
+                }}
               />
             )}
           </td>

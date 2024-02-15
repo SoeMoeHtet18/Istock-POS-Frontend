@@ -96,7 +96,7 @@ export const StockNavBar = ({
         {item.sub_categories?.length > 0 &&
           item.sub_categories.map((sub_item) => (
             <NavItem
-              key={sub_item.id + sub_item.code}
+              key={sub_item.name + sub_item.code}
               item={sub_item}
               icon={<MdOutlineCategory />}
               options={categoryOptions}

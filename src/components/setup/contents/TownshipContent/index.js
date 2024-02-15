@@ -140,8 +140,8 @@ export const TownshipContent = () => {
         // Update the specific row at the given index
         updatedRows[editIndex] = (
           <TownshipTableInput
-            key={`row-${dataLength}`}
-            index={dataLength}
+            key={`row-${editIndex}`}
+            index={editIndex}
             dataLength={dataLength}
             onDataLengthChange={handleDataChange}
             formData={formData}
