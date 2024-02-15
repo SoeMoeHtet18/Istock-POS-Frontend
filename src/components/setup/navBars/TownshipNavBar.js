@@ -11,7 +11,7 @@ export const TownshipNavBar = ({
   categories,
   refetchCategories,
 }) => {
-  const [navItems, setNavItems] = useState(categories);
+  const [navItems, setNavItems] = useState([]);
   const [classFormOpen, setClassFormOpen] = useState(false);
   const [createDivision, { isSuccess }] = useCreateDivisionMutation();
 
@@ -21,6 +21,10 @@ export const TownshipNavBar = ({
     }
   }, [isSuccess]);
 
+  useEffect(() => {
+    setNavItems(categories);
+  }, [categories]);
+
   const openClassForm = () => setClassFormOpen(true);
 
   const titleOptions = [
@@ -28,7 +32,7 @@ export const TownshipNavBar = ({
       name: "New Division",
       onClick: openClassForm,
     },
-    { name: "Print Division", onClick: () => {} },
+    // { name: "Print Division", onClick: () => {} },
   ];
 
   const classOptions = [
@@ -38,7 +42,7 @@ export const TownshipNavBar = ({
     },
     { name: "Edit Division", onClick: () => {} },
     { name: "Delete Division", onClick: () => {}, isBreak: true },
-    { name: "Merge Division", onClick: () => {} },
+    // { name: "Merge Division", onClick: () => {} },
   ];
 
   const renderNavOptions = () => {
@@ -68,10 +72,12 @@ export const TownshipNavBar = ({
 
   const forms = [
     <ClassFormDialog
+      key="classForm"
       label="Division"
       open={classFormOpen}
       handleClose={() => setClassFormOpen(false)}
       apiCall={createDivision}
+      isCodeRequired={false}
     />,
   ];
 

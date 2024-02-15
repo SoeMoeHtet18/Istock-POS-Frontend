@@ -42,8 +42,6 @@ const TownshipTableInput = ({
     },
   ];
 
-  console.log(formData);
-
   const handleInputChange =
     (setFormData, onDataLengthChange, index, slug) => (e) => {
       onDataLengthChange(index);

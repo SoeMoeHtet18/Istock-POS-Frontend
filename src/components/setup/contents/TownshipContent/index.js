@@ -8,7 +8,6 @@ import {
   useGetAllTownshipsQuery,
 } from "../../../../tools/api-services/townshipApi";
 import { useGetAllDivisionsQuery } from "../../../../tools/api-services/divisionApi";
-import { dumpDivisions, dumpTownships } from "./data";
 
 export const TownshipContent = () => {
   const [dataLength, setDataLength] = useState(0);
@@ -17,7 +16,7 @@ export const TownshipContent = () => {
   const [editIndex, setEditIndex] = useState(null);
   const [isDataCatched, setIsDataCatched] = useState(false);
 
-  let {
+  const {
     data: townships,
     error,
     isLoading,
@@ -27,13 +26,8 @@ export const TownshipContent = () => {
     divisionId: divisionID ?? "",
   });
 
-  let { data: divisions, refetch: refetchDivisions } =
+  const { data: divisions, refetch: refetchDivisions } =
     useGetAllDivisionsQuery();
-
-  //import dummy data
-  divisions = divisions ?? dumpDivisions;
-  townships = townships ?? dumpTownships;
-  isTownshipsFetched = true;
 
   const [createTownship, { isSuccess }] = useCreateTownshipMutation();
 
@@ -109,8 +103,7 @@ export const TownshipContent = () => {
   }, [townships]);
 
   useEffect(() => {
-    // if (isTownshipsFetched && !isDataCatched && divisions) {
-    if (divisions) {
+    if (isTownshipsFetched && !isDataCatched && divisions) {
       const dataFillLength = dataLength < 10 ? 10 : dataLength;
       const newRows = [];
       for (let i = 0; i <= dataFillLength; i++) {

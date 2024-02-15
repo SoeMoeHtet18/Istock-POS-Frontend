@@ -2,7 +2,13 @@ import React, { useRef } from "react";
 import { FormDialog } from "../layout/formDialog";
 import { TextField } from "@mui/material";
 
-export const ClassFormDialog = ({ label, open, handleClose, apiCall }) => {
+export const ClassFormDialog = ({
+  label,
+  open,
+  handleClose,
+  apiCall,
+  isCodeRequired = true,
+}) => {
   const nameRef = useRef(null);
   const codeRef = useRef(null);
 
@@ -21,18 +27,20 @@ export const ClassFormDialog = ({ label, open, handleClose, apiCall }) => {
       variant="standard"
       key="name"
     />,
-    <TextField
-      autoFocus
-      required
-      margin="dense"
-      id="code"
-      name="code"
-      label="Sort Code"
-      type="text"
-      fullWidth
-      variant="standard"
-      key="code"
-    />,
+    isCodeRequired && (
+      <TextField
+        autoFocus
+        required
+        margin="dense"
+        id="code"
+        name="code"
+        label="Sort Code"
+        type="text"
+        fullWidth
+        variant="standard"
+        key="code"
+      />
+    ),
   ];
   return (
     <div>

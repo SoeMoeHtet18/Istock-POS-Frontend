@@ -150,8 +150,6 @@ export const StockContent = () => {
 
   useEffect(() => {
     if (isStockSuccess && !isDataCatched && categories) {
-      console.log("data cached", isDataCatched);
-
       const dataFillLength = dataLength < 10 ? 10 : dataLength;
       const newRows = [];
       for (let i = 0; i <= dataFillLength; i++) {
