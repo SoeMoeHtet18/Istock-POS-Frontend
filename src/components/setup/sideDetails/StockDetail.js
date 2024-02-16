@@ -163,8 +163,8 @@ export const StockDetail = ({
           </div>
         </div>
       </div>
-      <div className="flex gap-1">
-        <div className="border relative pt-3">
+      <div className="flex justify-end gap-1">
+        {/* <div className="border relative pt-3">
           <span className="top-letter">Reorder and Account</span>
           <div className="flex flex-col">
             <div className="text-xs ps-1">
@@ -218,8 +218,8 @@ export const StockDetail = ({
               </div>
             </div>
           </div>
-        </div>
-        <div className="border relative px-2 pt-3">
+        </div> */}
+        <div className="border relative px-2 pt-3 w-1/2">
           <span className="top-letter">Price</span>
           <div className="flex">
             <div className="text-xs">

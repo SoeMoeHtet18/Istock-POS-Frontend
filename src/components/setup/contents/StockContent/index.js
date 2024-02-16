@@ -120,7 +120,7 @@ export const StockContent = () => {
       formData.salePriceThree ? JSON.stringify(formData.salePriceThree) : []
     );
     form.append("images", formData.image ?? []);
-    console.log(formData.image);
+
     createStock(form);
   };
 
