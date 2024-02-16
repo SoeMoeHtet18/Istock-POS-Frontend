@@ -13,11 +13,12 @@ export const StockDetail = ({
 }) => {
   const [detailInputs, setDetailInputs] = useState([]);
 
-  const handleInputChange = (setFormData, index, slug, selectedData) => (e) => {
+  const handleInputChange = (setFormData, index, slug) => (e) => {
+    console.log(e.target.value, slug);
     // Use setFormData to update the state
     setFormData((prevFormData) => {
       const updatedSlugArray = [...(prevFormData[slug] || [])]; // Create a copy of the array for the given slug
-      updatedSlugArray[index] = selectedData ?? e.target.value; // Update the value at the specified index
+      updatedSlugArray[index] = e.target.value; // Update the value at the specified index
 
       return {
         ...prevFormData,
@@ -115,22 +116,18 @@ export const StockDetail = ({
                       input.slug === "category"
                         ? formData?.subCategoryIds?.[index] ??
                           formData?.categoryIds?.[index] ??
-                          ""
+                          null
                         : formData?.[input.slug]?.[index]
                     }
                     onChange={handleInputChange(
                       setFormData,
                       index,
-                      input.slug === "category" && input.subValue
+                      input.slug === "category" &&
+                        (subCategory || formData?.subCategoryIds?.[index])
                         ? "subCategoryIds"
-                        : input.slug === "category" && !input.subValue
+                        : input.slug === "category" && !subCategory
                         ? "categoryIds"
-                        : input.slug,
-                      input.slug === "category"
-                        ? formData?.subCategoryIds?.[index] ??
-                            formData?.categoryIds?.[index] ??
-                            ""
-                        : formData?.[input.slug]?.[index]
+                        : input.slug
                     )}
                   >
                     {input.slug === "category" &&

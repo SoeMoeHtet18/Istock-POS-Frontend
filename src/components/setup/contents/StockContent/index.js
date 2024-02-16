@@ -179,7 +179,6 @@ export const StockContent = () => {
     setRows((prevRows) => {
       const updatedRows = [...prevRows];
       if (editIndex < updatedRows.length) {
-        console.log("editing at", editIndex);
         // Update the specific row at the given index
         updatedRows[editIndex] = (
           <StockTableInput
@@ -197,6 +196,27 @@ export const StockContent = () => {
             editingSlug={editingSlug}
           />
         );
+
+        if (dataLength == editIndex) {
+          const nextRowIndex = parseInt(editIndex) + 1;
+
+          updatedRows[nextRowIndex] = (
+            <StockTableInput
+              key={`row-${nextRowIndex}`}
+              index={nextRowIndex}
+              dataLength={dataLength + 1}
+              onDataLengthChange={handleDataChange}
+              formData={formData}
+              setFormData={setFormData}
+              categories={categories}
+              category={category}
+              subCategory={subCategory}
+              editIndex={editIndex}
+              setEditIndex={setEditIndex}
+              editingSlug={editingSlug}
+            />
+          );
+        }
       } else {
         // Add a new row if the dataLength exceeds the current row count
         updatedRows.push(
