@@ -24,32 +24,32 @@ const SupplierTableInput = ({
   const tcells = [
     {
       ref: nameRef,
-      slug: "name",
+      slug: "names",
       type: "text",
     },
     {
       ref: shortRef,
-      slug: "short",
+      slug: "shorts",
       type: "text",
     },
     {
       ref: addressRef,
-      slug: "address",
+      slug: "addresses",
       type: "text",
     },
     {
       ref: creditRef,
-      slug: "credit",
+      slug: "credits",
       type: "checkbox",
     },
     {
       ref: consignRef,
-      slug: "consign",
+      slug: "consigns",
       type: "checkbox",
     },
     {
       ref: inactiveRef,
-      slug: "inactive",
+      slug: "inactives",
       type: "checkbox",
     },
   ];
@@ -58,21 +58,21 @@ const SupplierTableInput = ({
     (setFormData, onDataLengthChange, index, slug) => (e) => {
       onDataLengthChange(index);
       setEditIndex(index);
-      console.log(formData?.[slug]);
+
+      const value =
+        e.target.type === "checkbox" ? e.target.checked : e.target.value; // Check if the input type is checkbox
+
       // Use setFormData to update the state
       setFormData((prevFormData) => {
-        const updatedSlugArray = [...(prevFormData[slug] || [])]; // Create a copy of the array for the given slug
-        updatedSlugArray[index] = e.target.value; // Update the value at the specified index
         const updatedIDArray = [...(prevFormData.ids || [])];
         updatedIDArray[index] = updatedIDArray[index] ?? null;
-        const updatedBrandArray = [...(prevFormData.brand || [])];
-        updatedBrandArray[index] = index + 1;
+        const updatedSlugArray = [...(prevFormData[slug] || [])]; // Create a copy of the array for the given slug
+        updatedSlugArray[index] = value; // Update the value at the specified index
 
         return {
           ...prevFormData,
           [slug]: updatedSlugArray,
           ids: updatedIDArray,
-          brand: updatedBrandArray,
         };
       });
     };

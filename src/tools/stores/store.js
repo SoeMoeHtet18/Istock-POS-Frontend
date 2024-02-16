@@ -9,6 +9,7 @@ import { locationApi } from "../api-services/locationApi";
 import { shopApi } from "../api-services/shopApi";
 import { divisionApi } from "../api-services/divisionApi";
 import { townshipApi } from "../api-services/townshipApi";
+import { supplierApi } from "../api-services/supplierApi";
 
 const store = configureStore({
   reducer: {
@@ -21,6 +22,7 @@ const store = configureStore({
     [shopApi.reducerPath]: shopApi.reducer,
     [divisionApi.reducerPath]: divisionApi.reducer,
     [townshipApi.reducerPath]: townshipApi.reducer,
+    [supplierApi.reducerPath]: supplierApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -31,7 +33,8 @@ const store = configureStore({
       locationApi.middleware,
       shopApi.middleware,
       divisionApi.middleware,
-      townshipApi.middleware
+      townshipApi.middleware,
+      supplierApi.middleware
     ),
 });
 

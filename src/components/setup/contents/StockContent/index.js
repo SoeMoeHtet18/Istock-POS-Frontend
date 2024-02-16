@@ -21,8 +21,6 @@ export const StockContent = () => {
 
   const {
     data: stocks,
-    error,
-    isLoading,
     isSuccess: isStockSuccess,
     refetch: refetchStocks,
   } = useGetAllStocksQuery({
@@ -33,7 +31,7 @@ export const StockContent = () => {
   const { data: categories, refetch: refetchAllCategories } =
     useGetAllCategoriesQuery();
 
-  const [createStock, { isSuccess }] = useCreateStockMutation();
+  const [createStock] = useCreateStockMutation();
 
   useEffect(() => {
     if (stocks) {

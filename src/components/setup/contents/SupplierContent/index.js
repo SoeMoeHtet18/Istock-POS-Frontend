@@ -1,65 +1,54 @@
 import React, { useEffect, useState } from "react";
 import { Content } from "../../layout/content";
-import { LocationNavBar } from "../../navBars/LocationNavBar";
 import DataTable from "../../layout/table";
-import {
-  useCreateShopMutation,
-  useGetAllShopsQuery,
-} from "../../../../tools/api-services/shopApi";
-import { useGetAllBranchesQuery } from "../../../../tools/api-services/branchApi";
-import LocationTableInput from "../../tableInputs/LocationTableInput";
 import SupplierTableInput from "../../tableInputs/SupplierTableInput";
 import { SupplierDetail } from "../../sideDetails/SupplierDetail";
 import { SupplierNavBar } from "../../navBars/SupplierNavBar";
+import {
+  useCreateSupplierMutation,
+  useGetAllSuppliersQuery,
+} from "../../../../tools/api-services/supplierApi";
+import { useGetAllTownshipsWithSuppliersQuery } from "../../../../tools/api-services/townshipApi";
 
 export const SupplierContent = () => {
   const [dataLength, setDataLength] = useState(0);
   const [formData, setFormData] = useState({});
-  const [category, setCategory] = useState(null);
-  const [subCategory, setSubCategory] = useState(null);
   const [editIndex, setEditIndex] = useState(null);
-  const [editingSlug, setEditingSlug] = useState("");
+  const [editingSlug, setEditingSlug] = useState(null);
   const [isDataCached, setIsDataCached] = useState(false);
+  const [townshipId, setTownshipId] = useState(null);
+  const { data: townships } = useGetAllTownshipsWithSuppliersQuery();
 
   const {
-    data: shops,
-    error,
-    isLoading,
-    isSuccess: isShopsFetched,
-    refetch: refetchShops,
-  } = useGetAllShopsQuery({
-    categoryId: category != null ? category.id : "",
-    subCategoryId: subCategory != null ? subCategory.id : "",
-  });
+    data: suppliers,
+    isSuccess: isSuppliersFetched,
+    refetch: refetchSuppliers,
+  } = useGetAllSuppliersQuery();
 
-  const { data: categories, refetch: refetchAllCategories } =
-    useGetAllBranchesQuery();
-
-  const [createShop, { isSuccess }] = useCreateShopMutation();
+  const [createSupplier] = useCreateSupplierMutation();
 
   useEffect(() => {
-    if (shops) {
+    if (suppliers) {
       setFormData(() => ({
-        ids: shops.map((shop) => shop.id) ?? [],
-        code: shops.map((shop) => shop.barcode) ?? [],
-        description: shops.map((shop) => shop.name) ?? [],
-        short: shops.map((shop) => shop.short_name) ?? [],
-        categoryIds: shops.map((shop) => shop.category_id) ?? [],
-        subCategoryIds: shops.map((shop) => shop.sub_category_id) ?? [],
-        brand: shops.map((shop) => shop.brand) ?? [],
-        purchaseCurrency: shops.map((shop) => shop.purchase_currency) ?? [],
-        purchasePrice: shops.map((shop) => shop.purchase_price) ?? [],
-        supplierCurrency: shops.map((shop) => shop.supplier_currency) ?? [],
-        salePrice: shops.map((shop) => shop.sale_price) ?? [],
-        salePriceOne: shops.map((shop) => shop.sale_price_one) ?? [],
-        salePriceTwo: shops.map((shop) => shop.sale_price_two) ?? [],
-        salePriceThree: shops.map((shop) => shop.sale_price_three) ?? [],
-        gp: shops.map((shop) => shop.gp) ?? [],
-        image: shops.map((shop) => shop.image) ?? [],
+        ids: suppliers.map((supplier) => supplier.id) ?? [],
+        names: suppliers.map((supplier) => supplier.name) ?? [],
+        shorts: suppliers.map((supplier) => supplier.short_name) ?? [],
+        addresses: suppliers.map((supplier) => supplier.address) ?? [],
+        credits: suppliers.map((supplier) => supplier.is_credit) ?? [],
+        consigns: suppliers.map((supplier) => supplier.is_consign) ?? [],
+        inactives: suppliers.map((supplier) => supplier.is_inactive) ?? [],
+        company_names: suppliers.map((supplier) => supplier.company_name) ?? [],
+        township_ids: suppliers.map((supplier) => supplier.township_id) ?? [],
+        contacts: suppliers.map((supplier) => supplier.contact) ?? [],
+        faxes: suppliers.map((supplier) => supplier.fax) ?? [],
+        phones: suppliers.map((supplier) => supplier.phone) ?? [],
+        emails: suppliers.map((supplier) => supplier.email) ?? [],
+        credit_due_days:
+          suppliers.map((supplier) => supplier.credit_due_days) ?? [],
       }));
-      setDataLength(shops.length);
+      setDataLength(suppliers.length);
     }
-  }, [shops]);
+  }, [suppliers]);
 
   const handleDataChange = (index) => {
     setDataLength((prevDataLength) =>
@@ -82,47 +71,50 @@ export const SupplierContent = () => {
     const form = new FormData();
 
     form.append("ids", formData.ids ? JSON.stringify(formData.ids) : []);
-    form.append("barcodes", formData.code ? JSON.stringify(formData.code) : []);
-    form.append(
-      "names",
-      formData.description ? JSON.stringify(formData.description) : []
-    );
+    form.append("names", formData.names ? JSON.stringify(formData.names) : []);
     form.append(
       "short_names",
-      formData.short ? JSON.stringify(formData.short) : []
+      formData.shorts ? JSON.stringify(formData.shorts) : []
     );
     form.append(
-      "categoryIds",
-      formData.categoryIds ? JSON.stringify(formData.categoryIds) : []
+      "addresses",
+      formData.addresses ? JSON.stringify(formData.addresses) : []
     );
     form.append(
-      "subcategoryIds",
-      formData.subCategoryIds ? JSON.stringify(formData.subCategoryIds) : []
-    );
-    form.append("brands", formData.brand ? JSON.stringify(formData.brand) : []);
-    form.append(
-      "purchase_prices",
-      formData.purchasePrice ? JSON.stringify(formData.purchasePrice) : []
+      "credits",
+      formData.credits ? JSON.stringify(formData.credits) : []
     );
     form.append(
-      "sale_prices",
-      formData.salePrice ? JSON.stringify(formData.salePrice) : []
+      "consigns",
+      formData.consigns ? JSON.stringify(formData.consigns) : []
     );
     form.append(
-      "sale_price_one",
-      formData.salePriceOne ? JSON.stringify(formData.salePriceOne) : []
+      "inactives",
+      formData.inactives ? JSON.stringify(formData.inactives) : []
     );
     form.append(
-      "sale_price_two",
-      formData.salePriceTwo ? JSON.stringify(formData.salePriceTwo) : []
+      "company_names",
+      formData.company_names ? JSON.stringify(formData.company_names) : []
     );
     form.append(
-      "sale_price_three",
-      formData.salePriceThree ? JSON.stringify(formData.salePriceThree) : []
+      "township_ids",
+      formData.township_ids ? JSON.stringify(formData.township_ids) : []
     );
-    form.append("images", formData.image ?? []);
+    form.append(
+      "contacts",
+      formData.contacts ? JSON.stringify(formData.contacts) : []
+    );
+    form.append("faxes", formData.faxes ? JSON.stringify(formData.faxes) : []);
+    form.append(
+      "phones",
+      formData.phones ? JSON.stringify(formData.phones) : []
+    );
+    form.append(
+      "emails",
+      formData.emails ? JSON.stringify(formData.emails) : []
+    );
 
-    createShop(form);
+    createSupplier(form);
   };
 
   const bottomNavBtns = [
@@ -145,10 +137,10 @@ export const SupplierContent = () => {
 
   useEffect(() => {
     setIsDataCached(false);
-  }, [shops]);
+  }, [suppliers]);
 
   useEffect(() => {
-    if (isShopsFetched && !isDataCached && categories) {
+    if (isSuppliersFetched && !isDataCached) {
       const dataFillLength = dataLength < 10 ? 10 : dataLength;
       const newRows = [];
       for (let i = 0; i <= dataFillLength; i++) {
@@ -160,9 +152,6 @@ export const SupplierContent = () => {
             onDataLengthChange={handleDataChange}
             formData={formData}
             setFormData={setFormData}
-            categories={categories}
-            category={category}
-            subCategory={subCategory}
             editIndex={editIndex}
             setEditIndex={setEditIndex}
             editingSlug={editingSlug}
@@ -187,14 +176,29 @@ export const SupplierContent = () => {
             onDataLengthChange={handleDataChange}
             formData={formData}
             setFormData={setFormData}
-            categories={categories}
-            category={category}
-            subCategory={subCategory}
             editIndex={editIndex}
             setEditIndex={setEditIndex}
             editingSlug={editingSlug}
           />
         );
+
+        if (editIndex == dataLength) {
+          const nextRowIndex = parseInt(editIndex) + 1;
+
+          updatedRows[nextRowIndex] = (
+            <SupplierTableInput
+              key={`row-${nextRowIndex}`}
+              index={nextRowIndex}
+              dataLength={dataLength + 1}
+              onDataLengthChange={handleDataChange}
+              formData={formData}
+              setFormData={setFormData}
+              editIndex={editIndex}
+              setEditIndex={setEditIndex}
+              editingSlug={editingSlug}
+            />
+          );
+        }
       } else {
         // Add a new row if the dataLength exceeds the current row count
         updatedRows.push(
@@ -205,9 +209,6 @@ export const SupplierContent = () => {
             onDataLengthChange={handleDataChange}
             formData={formData}
             setFormData={setFormData}
-            categories={categories}
-            category={category}
-            subCategory={subCategory}
             editIndex={editIndex}
             setEditIndex={setEditIndex}
             editingSlug={editingSlug}
@@ -216,39 +217,8 @@ export const SupplierContent = () => {
       }
       return updatedRows;
     });
-  }, [
-    editIndex,
-    dataLength,
-    category,
-    editingSlug,
-    formData,
-    subCategory,
-    categories,
-  ]);
+  }, [editIndex, dataLength, editingSlug, formData]);
 
-  useEffect(() => {
-    console.log(formData);
-  }, [formData]);
-
-  const refetchDataAndCacheCategory = (category) => {
-    setCategory(category);
-    setSubCategory(null);
-    console.log("category fetched");
-    refetchShops({
-      categoryId: category != null ? category.id : "",
-      subCategoryId: "",
-    });
-  };
-
-  const refetchDataAndCacheSubCategory = (subCategory, category) => {
-    setCategory(category);
-    setSubCategory(subCategory);
-    console.log("subcategory fetched");
-    refetchShops({
-      categoryId: "",
-      subCategoryId: subCategory != null ? subCategory.id : "",
-    });
-  };
   return (
     <Content
       pageTitle={"Supplier"}
@@ -257,7 +227,16 @@ export const SupplierContent = () => {
       dataTable={<DataTable theads={theads} tRows={rows} />}
       dataLength={dataLength}
       bottomNavBtns={bottomNavBtns}
-      detail={<SupplierDetail />}
+      detail={
+        <SupplierDetail
+          townships={townships}
+          townshipId={townshipId}
+          index={editIndex}
+          formData={formData}
+          setFormData={setFormData}
+          setEditingSlug={setEditingSlug}
+        />
+      }
       width="w-4.1w"
     />
   );

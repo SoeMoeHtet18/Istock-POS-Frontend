@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { TiArrowDownThick } from "react-icons/ti";
-import { ImageUpload } from "../../common/inputs/ImageUpload";
 
 export const SupplierDetail = ({
-  categories,
-  category,
-  subCategory,
+  townships,
+  townshipId,
   index,
   formData,
   setFormData,
@@ -32,27 +29,27 @@ export const SupplierDetail = ({
     setDetailInputs([
       {
         label: "Code",
-        slug: "code",
+        slug: "shorts",
         type: "text",
       },
       {
-        label: "Supplier",
-        slug: "supplier",
+        label: "Name",
+        slug: "names",
         type: "text",
       },
       {
         label: "Company Name",
-        slug: "company",
+        slug: "company_names",
         type: "text",
       },
       {
         label: "Address",
-        slug: "address",
+        slug: "addresses",
         type: "text",
       },
       {
         label: "Township",
-        slug: "township",
+        slug: "township_ids",
         type: "select",
         options: ["Brand 1", "Brand 2", "Brand 3"],
       },
@@ -61,26 +58,26 @@ export const SupplierDetail = ({
     setContactInputs([
       {
         label: "Contact",
-        slug: "contact",
+        slug: "contacts",
         type: "text",
       },
       {
         label: "Fax",
-        slug: "fax",
+        slug: "faxes",
         type: "text",
       },
       {
         label: "Phone",
-        slug: "phone",
+        slug: "phones",
         type: "ph",
       },
       {
-        label: "email",
-        slug: "email",
+        label: "Email",
+        slug: "emails",
         type: "email",
       },
     ]);
-  }, [categories, category, subCategory]);
+  }, [townships, townshipId]);
 
   return (
     <div className="border relative px-2 pt-5 pb-2 mb-3 w-4.1w">

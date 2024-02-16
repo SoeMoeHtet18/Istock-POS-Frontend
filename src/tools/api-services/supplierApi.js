@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-export const townshipApi = createApi({
-  reducerPath: "townshipApi",
+export const supplierApi = createApi({
+  reducerPath: "supplierApi",
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.REACT_APP_URL,
     prepareHeaders: (headers, { getState }) => {
@@ -11,32 +11,24 @@ export const townshipApi = createApi({
       }
     },
   }),
+  tagTypes: ["Supplier"],
   endpoints: (builder) => ({
-    getAllTownships: builder.query({
+    getAllSuppliers: builder.query({
       query: () => ({
-        url: "/townships",
+        url: `/suppliers`,
       }),
       transformResponse: (response) => response.data,
     }),
-    createTownship: builder.mutation({
+    createSupplier: builder.mutation({
       query: (data) => ({
-        url: "/townships/store",
+        url: "/suppliers/store",
         method: "POST",
         body: data,
-      }),
-      transformResponse: (response) => response.data,
-    }),
-    getAllTownshipsWithSuppliers: builder.query({
-      query: () => ({
-        url: "/townships-with-suppliers",
       }),
       transformResponse: (response) => response.data,
     }),
   }),
 });
 
-export const {
-  useGetAllTownshipsQuery,
-  useCreateTownshipMutation,
-  useGetAllTownshipsWithSuppliersQuery,
-} = townshipApi;
+export const { useGetAllSuppliersQuery, useCreateSupplierMutation } =
+  supplierApi;
