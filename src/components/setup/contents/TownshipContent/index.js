@@ -144,6 +144,24 @@ export const TownshipContent = () => {
             setEditIndex={setEditIndex}
           />
         );
+
+        if (dataLength == editIndex) {
+          const nextRowIndex = parseInt(editIndex) + 1;
+
+          updatedRows[nextRowIndex] = (
+            <TownshipTableInput
+              key={`row-${nextRowIndex}`}
+              index={nextRowIndex}
+              dataLength={dataLength + 1}
+              onDataLengthChange={handleDataChange}
+              formData={formData}
+              setFormData={setFormData}
+              categories={divisions}
+              editIndex={editIndex}
+              setEditIndex={setEditIndex}
+            />
+          );
+        }
       } else {
         // Add a new row if the dataLength exceeds the current row count
         updatedRows.push(
