@@ -17,7 +17,7 @@ export const StockContent = () => {
   const [subCategory, setSubCategory] = useState(null);
   const [editIndex, setEditIndex] = useState(null);
   const [editingSlug, setEditingSlug] = useState("");
-  const [isDataCatched, setIsDataCatched] = useState(false);
+  const [isDataCached, setIsDataCached] = useState(false);
 
   const {
     data: stocks,
@@ -145,11 +145,11 @@ export const StockContent = () => {
   ];
 
   useEffect(() => {
-    setIsDataCatched(false);
+    setIsDataCached(false);
   }, [stocks]);
 
   useEffect(() => {
-    if (isStockSuccess && !isDataCatched && categories) {
+    if (isStockSuccess && !isDataCached && categories) {
       const dataFillLength = dataLength < 10 ? 10 : dataLength;
       const newRows = [];
       for (let i = 0; i <= dataFillLength; i++) {
@@ -171,9 +171,9 @@ export const StockContent = () => {
         );
       }
       setRows(newRows);
-      setIsDataCatched(true);
+      setIsDataCached(true);
     }
-  }, [formData, setIsDataCatched]);
+  }, [formData, setIsDataCached]);
 
   useEffect(() => {
     setRows((prevRows) => {

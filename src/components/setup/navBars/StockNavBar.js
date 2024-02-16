@@ -128,12 +128,14 @@ export const StockNavBar = ({
 
   const forms = [
     <ClassFormDialog
+      key="classForm"
       label="Class"
       open={classFormOpen}
       handleClose={() => setClassFormOpen(false)}
       apiCall={createCategory}
     />,
     <CategoryFormDialog
+      key="categoryForm"
       label="Category"
       supLabel="Class"
       supOptions={optionsForCategoryForm}

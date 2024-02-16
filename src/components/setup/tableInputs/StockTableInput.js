@@ -167,8 +167,6 @@ const StockTableInput = ({
         break;
     }
 
-    console.log(editIndex, editingSlug, formData);
-
     if (formData && editingSlug && editIndex) {
       console.log("editIndex exist", editIndex);
       if (editingSlug === "category") {
@@ -182,7 +180,6 @@ const StockTableInput = ({
       if (ref.current) {
         ref.current.value = formData?.[editingSlug]?.[editIndex] ?? "";
       }
-      console.log(ref.current);
     }
 
     if (
@@ -191,7 +188,6 @@ const StockTableInput = ({
       editIndex == null &&
       editIndex !== 0
     ) {
-      console.log("editIndex not exist", editIndex);
       tcells.map((tcell) => {
         let valueSlug = tcell.slug;
         if (tcell.slug === "category") {

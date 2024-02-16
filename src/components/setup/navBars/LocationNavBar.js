@@ -19,7 +19,7 @@ export const LocationNavBar = ({
   branches,
   refetchBranches,
 }) => {
-  const [navItems, setNavItems] = useState(branches);
+  const [navItems, setNavItems] = useState([]);
   const [classFormOpen, setClassFormOpen] = useState(false);
   const [categoryFormOpen, setCategoryFormOpen] = useState(false);
   const [parentClassId, setParentClassId] = useState(0);
@@ -35,10 +35,9 @@ export const LocationNavBar = ({
     }
   }, [isSuccess, subIsSuccess]);
 
-  // if branches are not synced with cmt out this
-  //   useEffect(() => {
-  //     setNavItems(branches);
-  //   }, [branches]);
+  useEffect(() => {
+    setNavItems(branches);
+  }, [branches]);
 
   const openClassForm = () => setClassFormOpen(true);
   const openCategoryForm = (e) => {
@@ -54,7 +53,7 @@ export const LocationNavBar = ({
       name: "New Branch",
       onClick: openClassForm,
     },
-    { name: "Print Branch", onClick: () => {} },
+    // { name: "Print Branch", onClick: () => {} },
   ];
 
   const classOptions = [
@@ -65,8 +64,8 @@ export const LocationNavBar = ({
     { name: "Edit Branch", onClick: () => {} },
     { name: "Delete Branch", onClick: () => {}, isBreak: true },
     { name: "New Location Group", onClick: openCategoryForm },
-    { name: "Print Location Group", onClick: () => {}, isBreak: true },
-    { name: "Merge Branch", onClick: () => {} },
+    // { name: "Print Location Group", onClick: () => {}, isBreak: true },
+    // { name: "Merge Branch", onClick: () => {} },
   ];
 
   const categoryOptions = [
@@ -76,7 +75,7 @@ export const LocationNavBar = ({
     },
     { name: "Edit", onClick: () => {} },
     { name: "Delete", onClick: () => {}, isBreak: true },
-    { name: "Merge Location Group", onClick: () => {} },
+    // { name: "Merge Location Group", onClick: () => {} },
   ];
 
   const renderNavOptions = () => {
@@ -88,22 +87,23 @@ export const LocationNavBar = ({
         <NavItem
           item={item}
           options={classOptions}
-          icon={<BiCategoryAlt />}
+          icon={<BiCategoryAlt className="class-icon" />}
           classes="ml-4"
           onClick={onCategoryClick}
         />
 
         {/* Location Groups */}
-        {item.sub_categories?.length > 0 &&
-          item.sub_categories.map((sub_item) => (
+        {item.locations?.length > 0 &&
+          item.locations.map((sub_item) => (
             <NavItem
-              key={sub_item.id + sub_item.code}
+              key={sub_item.name + sub_item.code}
               item={sub_item}
-              icon={<MdOutlineCategory />}
+              icon={<MdOutlineCategory className="class-icon" />}
               options={categoryOptions}
               classes="ml-8"
               parentItem={item}
               onClick={onSubCategoryClick}
+              title={sub_item.name}
             />
           ))}
       </div>
@@ -129,12 +129,14 @@ export const LocationNavBar = ({
 
   const forms = [
     <ClassFormDialog
+      key="classForm"
       label="Branch"
       open={classFormOpen}
       handleClose={() => setClassFormOpen(false)}
       apiCall={createBranch}
     />,
     <CategoryFormDialog
+      key="categoryForm"
       label="Location Group"
       supLabel="Branch"
       supOptions={optionsForCategoryForm}

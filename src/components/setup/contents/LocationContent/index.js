@@ -8,53 +8,72 @@ import {
 } from "../../../../tools/api-services/shopApi";
 import { useGetAllBranchesQuery } from "../../../../tools/api-services/branchApi";
 import LocationTableInput from "../../tableInputs/LocationTableInput";
+import { useGetAllLocationsQuery } from "../../../../tools/api-services/locationApi";
 
 export const LocationContent = () => {
   const [dataLength, setDataLength] = useState(0);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState(null);
+  const [editIndex, setEditIndex] = useState(null);
+  const [isDataCached, setIsDataCached] = useState(false);
+
   const [category, setCategory] = useState(null);
   const [subCategory, setSubCategory] = useState(null);
-  const [editIndex, setEditIndex] = useState(null);
   const [editingSlug, setEditingSlug] = useState("");
-  const [isDataCatched, setIsDataCatched] = useState(false);
 
   const {
     data: shops,
-    error,
-    isLoading,
     isSuccess: isShopsFetched,
     refetch: refetchShops,
-  } = useGetAllShopsQuery({
-    categoryId: category != null ? category.id : "",
-    subCategoryId: subCategory != null ? subCategory.id : "",
-  });
-
-  const { data: categories, refetch: refetchAllCategories } =
-    useGetAllBranchesQuery();
+  } = useGetAllShopsQuery();
+  const { data: branches, refetch: refetchBranches } = useGetAllBranchesQuery();
+  const { data: locations, refetch: refetchLocations } =
+    useGetAllLocationsQuery();
 
   const [createShop, { isSuccess }] = useCreateShopMutation();
 
+  const createBulkShops = () => {
+    const form = new FormData();
+
+    form.append("ids", formData.ids ? JSON.stringify(formData.ids) : []);
+    form.append("names", formData.names ? JSON.stringify(formData.names) : []);
+    form.append(
+      "short_names",
+      formData.shorts ? JSON.stringify(formData.shorts) : []
+    );
+    form.append(
+      "branches",
+      formData.branches ? JSON.stringify(formData.branches) : []
+    );
+    form.append(
+      "locations",
+      formData.locationGroups ? JSON.stringify(formData.locationGroups) : []
+    );
+    form.append(
+      "sortCodes",
+      formData.sortCodes ? JSON.stringify(formData.sortCodes) : []
+    );
+    form.append(
+      "diffSPs",
+      formData.diffSPs ? JSON.stringify(formData.diffSPs) : []
+    );
+
+    createShop(form);
+  };
+
   useEffect(() => {
     if (shops) {
-      setFormData(() => ({
-        ids: shops.map((shop) => shop.id) ?? [],
-        code: shops.map((shop) => shop.barcode) ?? [],
-        description: shops.map((shop) => shop.name) ?? [],
-        short: shops.map((shop) => shop.short_name) ?? [],
-        categoryIds: shops.map((shop) => shop.category_id) ?? [],
-        subCategoryIds: shops.map((shop) => shop.sub_category_id) ?? [],
-        brand: shops.map((shop) => shop.brand) ?? [],
-        purchaseCurrency: shops.map((shop) => shop.purchase_currency) ?? [],
-        purchasePrice: shops.map((shop) => shop.purchase_price) ?? [],
-        supplierCurrency: shops.map((shop) => shop.supplier_currency) ?? [],
-        salePrice: shops.map((shop) => shop.sale_price) ?? [],
-        salePriceOne: shops.map((shop) => shop.sale_price_one) ?? [],
-        salePriceTwo: shops.map((shop) => shop.sale_price_two) ?? [],
-        salePriceThree: shops.map((shop) => shop.sale_price_three) ?? [],
-        gp: shops.map((shop) => shop.gp) ?? [],
-        image: shops.map((shop) => shop.image) ?? [],
-      }));
+      const newFormData = {
+        ids: shops.map((shop) => shop.id),
+        names: shops.map((shop) => shop.name),
+        shorts: shops.map((shop) => shop.short_name),
+        branches: shops.map((shop) => shop.branch_id),
+        locationGroups: shops.map((shop) => shop.location_id),
+        sortIds: shops.map((shop) => shop.sort_id),
+        diffSPs: shops.map((shop) => shop.brand),
+      };
+      setFormData(newFormData);
       setDataLength(shops.length);
+      setIsDataCached(false);
     }
   }, [shops]);
 
@@ -67,85 +86,17 @@ export const LocationContent = () => {
   const theads = [
     { title: "Name", width: "20%" },
     { title: "Short", width: "15%" },
-    { title: "Location Group", width: "20%" },
     { title: "Branch", width: "20%" },
+    { title: "Location Group", width: "20%" },
     { title: "Sort Code", width: "20%" },
     { title: "Diff SP", width: "5%" },
   ];
 
   const [rows, setRows] = useState([]);
 
-  const createBulkShops = () => {
-    const form = new FormData();
-
-    form.append("ids", formData.ids ? JSON.stringify(formData.ids) : []);
-    form.append("barcodes", formData.code ? JSON.stringify(formData.code) : []);
-    form.append(
-      "names",
-      formData.description ? JSON.stringify(formData.description) : []
-    );
-    form.append(
-      "short_names",
-      formData.short ? JSON.stringify(formData.short) : []
-    );
-    form.append(
-      "categoryIds",
-      formData.categoryIds ? JSON.stringify(formData.categoryIds) : []
-    );
-    form.append(
-      "subcategoryIds",
-      formData.subCategoryIds ? JSON.stringify(formData.subCategoryIds) : []
-    );
-    form.append("brands", formData.brand ? JSON.stringify(formData.brand) : []);
-    form.append(
-      "purchase_prices",
-      formData.purchasePrice ? JSON.stringify(formData.purchasePrice) : []
-    );
-    form.append(
-      "sale_prices",
-      formData.salePrice ? JSON.stringify(formData.salePrice) : []
-    );
-    form.append(
-      "sale_price_one",
-      formData.salePriceOne ? JSON.stringify(formData.salePriceOne) : []
-    );
-    form.append(
-      "sale_price_two",
-      formData.salePriceTwo ? JSON.stringify(formData.salePriceTwo) : []
-    );
-    form.append(
-      "sale_price_three",
-      formData.salePriceThree ? JSON.stringify(formData.salePriceThree) : []
-    );
-    form.append("images", formData.image ?? []);
-
-    createShop(form);
-  };
-
-  const bottomNavBtns = [
-    {
-      name: "Confirm",
-      key: "F5",
-      onClick: createBulkShops,
-    },
-    {
-      name: "Delete",
-      key: "F8",
-      onClick: () => {},
-    },
-    {
-      name: "Unit Delete",
-      key: "Shift + F8",
-      onClick: () => {},
-    },
-  ];
-
   useEffect(() => {
-    setIsDataCatched(false);
-  }, [shops]);
-
-  useEffect(() => {
-    if (isShopsFetched && !isDataCatched && categories) {
+    if (isShopsFetched && !isDataCached && branches && locations) {
+      console.log("data is not cached, so cache it now");
       const dataFillLength = dataLength < 10 ? 10 : dataLength;
       const newRows = [];
       for (let i = 0; i <= dataFillLength; i++) {
@@ -157,7 +108,8 @@ export const LocationContent = () => {
             onDataLengthChange={handleDataChange}
             formData={formData}
             setFormData={setFormData}
-            categories={categories}
+            branches={branches}
+            locations={locations}
             category={category}
             subCategory={subCategory}
             editIndex={editIndex}
@@ -167,52 +119,78 @@ export const LocationContent = () => {
         );
       }
       setRows(newRows);
-      setIsDataCatched(true);
+      setIsDataCached(true);
     }
-  }, [formData, setIsDataCatched]);
+  }, [formData, isDataCached, isShopsFetched, branches, locations]);
 
   useEffect(() => {
-    setRows((prevRows) => {
-      const updatedRows = [...prevRows];
-      if (editIndex < updatedRows.length) {
-        // Update the specific row at the given index
-        updatedRows[editIndex] = (
-          <LocationTableInput
-            key={`row-${editIndex}`}
-            index={editIndex}
-            dataLength={dataLength}
-            onDataLengthChange={handleDataChange}
-            formData={formData}
-            setFormData={setFormData}
-            categories={categories}
-            category={category}
-            subCategory={subCategory}
-            editIndex={editIndex}
-            setEditIndex={setEditIndex}
-            editingSlug={editingSlug}
-          />
-        );
-      } else {
-        // Add a new row if the dataLength exceeds the current row count
-        updatedRows.push(
-          <LocationTableInput
-            key={`row-${dataLength}`}
-            index={dataLength}
-            dataLength={dataLength}
-            onDataLengthChange={handleDataChange}
-            formData={formData}
-            setFormData={setFormData}
-            categories={categories}
-            category={category}
-            subCategory={subCategory}
-            editIndex={editIndex}
-            setEditIndex={setEditIndex}
-            editingSlug={editingSlug}
-          />
-        );
-      }
-      return updatedRows;
-    });
+    console.log(editIndex, dataLength);
+    editIndex !== null &&
+      setRows((prevRows) => {
+        const updatedRows = [...prevRows];
+        if (editIndex < updatedRows.length) {
+          // Update the specific row at the given index
+          updatedRows[editIndex] = (
+            <LocationTableInput
+              key={`row-${editIndex}`}
+              index={editIndex}
+              dataLength={dataLength}
+              onDataLengthChange={handleDataChange}
+              formData={formData}
+              setFormData={setFormData}
+              branches={branches}
+              locations={locations}
+              category={category}
+              subCategory={subCategory}
+              editIndex={editIndex}
+              setEditIndex={setEditIndex}
+              editingSlug={editingSlug}
+            />
+          );
+
+          if (dataLength == editIndex) {
+            const nextRowIndex = parseInt(editIndex) + 1;
+
+            updatedRows[nextRowIndex] = (
+              <LocationTableInput
+                key={`row-${nextRowIndex}`}
+                index={nextRowIndex}
+                dataLength={dataLength + 1}
+                onDataLengthChange={handleDataChange}
+                formData={formData}
+                setFormData={setFormData}
+                branches={branches}
+                locations={locations}
+                category={category}
+                subCategory={subCategory}
+                editIndex={editIndex}
+                setEditIndex={setEditIndex}
+                editingSlug={editingSlug}
+              />
+            );
+          }
+        } else {
+          // Add a new row if the dataLength exceeds the current row count
+          updatedRows.push(
+            <LocationTableInput
+              key={`row-${dataLength}`}
+              index={dataLength}
+              dataLength={dataLength}
+              onDataLengthChange={handleDataChange}
+              formData={formData}
+              setFormData={setFormData}
+              categories={branches}
+              locations={locations}
+              category={category}
+              subCategory={subCategory}
+              editIndex={editIndex}
+              setEditIndex={setEditIndex}
+              editingSlug={editingSlug}
+            />
+          );
+        }
+        return updatedRows;
+      });
   }, [
     editIndex,
     dataLength,
@@ -220,32 +198,24 @@ export const LocationContent = () => {
     editingSlug,
     formData,
     subCategory,
-    categories,
+    branches,
+    locations,
   ]);
-
-  useEffect(() => {
-    console.log(formData);
-  }, [formData]);
 
   const refetchDataAndCacheCategory = (category) => {
     setCategory(category);
     setSubCategory(null);
     console.log("category fetched");
-    refetchShops({
-      categoryId: category != null ? category.id : "",
-      subCategoryId: "",
-    });
+    refetchShops();
   };
 
   const refetchDataAndCacheSubCategory = (subCategory, category) => {
     setCategory(category);
     setSubCategory(subCategory);
     console.log("subcategory fetched");
-    refetchShops({
-      categoryId: "",
-      subCategoryId: subCategory != null ? subCategory.id : "",
-    });
+    refetchShops();
   };
+
   return (
     <Content
       width={"w-7.5w"}
@@ -255,13 +225,29 @@ export const LocationContent = () => {
         <LocationNavBar
           onCategoryClick={refetchDataAndCacheCategory}
           onSubCategoryClick={refetchDataAndCacheSubCategory}
-          categories={categories}
-          refetchCategories={refetchAllCategories}
+          branches={branches}
+          refetchBranches={refetchBranches}
         />
       }
       dataTable={<DataTable theads={theads} tRows={rows} />}
       dataLength={dataLength}
-      bottomNavBtns={bottomNavBtns}
+      bottomNavBtns={[
+        {
+          name: "Confirm",
+          key: "F5",
+          onClick: createBulkShops,
+        },
+        {
+          name: "Delete",
+          key: "F8",
+          onClick: () => {},
+        },
+        {
+          name: "Unit Delete",
+          key: "Shift + F8",
+          onClick: () => {},
+        },
+      ]}
     />
   );
 };

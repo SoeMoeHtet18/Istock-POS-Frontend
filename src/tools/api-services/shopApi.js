@@ -14,10 +14,10 @@ export const shopApi = createApi({
   tagTypes: ["Shop"],
   endpoints: (builder) => ({
     getAllShops: builder.query({
-      query: ({ categoryId, subCategoryId }) => ({
-        url: `/shops?category=${categoryId}&subcategory=${subCategoryId}`,
+      query: () => ({
+        url: `/shops`,
       }),
-      transformResponse: (response) => response.data.data,
+      transformResponse: (response) => response.data,
     }),
     createShop: builder.mutation({
       query: (data) => ({
@@ -25,7 +25,7 @@ export const shopApi = createApi({
         method: "POST",
         body: data,
       }),
-      transformResponse: (response) => response.data.data,
+      transformResponse: (response) => response.data,
     }),
   }),
 });

@@ -14,7 +14,7 @@ export const TownshipContent = () => {
   const [formData, setFormData] = useState({});
   const [divisionID, setDivisionID] = useState(null);
   const [editIndex, setEditIndex] = useState(null);
-  const [isDataCatched, setIsDataCatched] = useState(false);
+  const [isDataCached, setIsDataCached] = useState(false);
 
   const {
     data: townships,
@@ -99,11 +99,11 @@ export const TownshipContent = () => {
   ];
 
   useEffect(() => {
-    setIsDataCatched(false);
+    setIsDataCached(false);
   }, [townships]);
 
   useEffect(() => {
-    if (isTownshipsFetched && !isDataCatched && divisions) {
+    if (isTownshipsFetched && !isDataCached && divisions) {
       const dataFillLength = dataLength < 10 ? 10 : dataLength;
       const newRows = [];
       for (let i = 0; i <= dataFillLength; i++) {
@@ -122,9 +122,9 @@ export const TownshipContent = () => {
         );
       }
       setRows(newRows);
-      setIsDataCatched(true);
+      setIsDataCached(true);
     }
-  }, [formData, setIsDataCatched]);
+  }, [formData, setIsDataCached]);
 
   useEffect(() => {
     setRows((prevRows) => {

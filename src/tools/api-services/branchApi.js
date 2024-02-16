@@ -24,7 +24,7 @@ export const branchApi = createApi({
         method: "POST",
         body: data,
       }),
-      transformResponse: (response) => response.data.data,
+      transformResponse: (response) => response.data,
     }),
   }),
 });

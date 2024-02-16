@@ -19,7 +19,7 @@ export const SupplierContent = () => {
   const [subCategory, setSubCategory] = useState(null);
   const [editIndex, setEditIndex] = useState(null);
   const [editingSlug, setEditingSlug] = useState("");
-  const [isDataCatched, setIsDataCatched] = useState(false);
+  const [isDataCached, setIsDataCached] = useState(false);
 
   const {
     data: shops,
@@ -144,11 +144,11 @@ export const SupplierContent = () => {
   ];
 
   useEffect(() => {
-    setIsDataCatched(false);
+    setIsDataCached(false);
   }, [shops]);
 
   useEffect(() => {
-    if (isShopsFetched && !isDataCatched && categories) {
+    if (isShopsFetched && !isDataCached && categories) {
       const dataFillLength = dataLength < 10 ? 10 : dataLength;
       const newRows = [];
       for (let i = 0; i <= dataFillLength; i++) {
@@ -170,9 +170,9 @@ export const SupplierContent = () => {
         );
       }
       setRows(newRows);
-      setIsDataCatched(true);
+      setIsDataCached(true);
     }
-  }, [formData, setIsDataCatched]);
+  }, [formData, setIsDataCached]);
 
   useEffect(() => {
     setRows((prevRows) => {

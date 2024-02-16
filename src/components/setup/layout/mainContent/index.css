@@ -35,3 +35,14 @@ select {
   -moz-appearance: none;
   appearance: none;
 }
+
+#setUpNavBar button h3 {
+  white-space: nowrap;
+}
+
+#setUpNavBar .class-icon {
+  width: auto;
+  height: auto;
+  min-width: 1rem;
+  min-height: 1rem;
+}
