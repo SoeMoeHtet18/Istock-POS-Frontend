@@ -28,7 +28,7 @@ export const townshipApi = createApi({
     }),
     getAllTownshipsWithSuppliers: builder.query({
       query: () => ({
-        url: "/townships-with-suppliers",
+        url: "/township-suppliers",
       }),
       transformResponse: (response) => response.data,
     }),
