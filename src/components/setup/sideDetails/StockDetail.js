@@ -14,7 +14,6 @@ export const StockDetail = ({
   const [detailInputs, setDetailInputs] = useState([]);
 
   const handleInputChange = (setFormData, index, slug) => (e) => {
-    console.log(e.target.value, slug);
     // Use setFormData to update the state
     setFormData((prevFormData) => {
       const updatedSlugArray = [...(prevFormData[slug] || [])]; // Create a copy of the array for the given slug
@@ -29,7 +28,6 @@ export const StockDetail = ({
   };
 
   const imageUpload = (img) => {
-    console.log(img);
     setFormData((prevFormData) => {
       const updatedImgArray = [...(prevFormData["image"] || [])];
       updatedImgArray[index] = img ?? null;
@@ -117,7 +115,7 @@ export const StockDetail = ({
                         ? formData?.subCategoryIds?.[index] ??
                           formData?.categoryIds?.[index] ??
                           null
-                        : formData?.[input.slug]?.[index]
+                        : formData?.[input.slug]?.[index] ?? ""
                     }
                     onChange={handleInputChange(
                       setFormData,
@@ -145,7 +143,7 @@ export const StockDetail = ({
                         formData?.categoryIds?.[index]
                       ? input.options?.map((option) => (
                           <option key={option.id} value={option.id}>
-                            {option.name}
+                            {option.name} - {option.code}
                           </option>
                         ))
                       : input.options?.map((option) => (

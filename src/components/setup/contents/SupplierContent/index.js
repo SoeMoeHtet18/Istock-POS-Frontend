@@ -9,6 +9,7 @@ import {
   useGetAllSuppliersQuery,
 } from "../../../../tools/api-services/supplierApi";
 import { useGetAllTownshipsWithSuppliersQuery } from "../../../../tools/api-services/townshipApi";
+import { useLocation } from "react-router-dom";
 
 export const SupplierContent = () => {
   const [dataLength, setDataLength] = useState(0);
@@ -17,6 +18,8 @@ export const SupplierContent = () => {
   const [editingSlug, setEditingSlug] = useState(null);
   const [isDataCached, setIsDataCached] = useState(false);
   const [townshipId, setTownshipId] = useState(null);
+  const path = useLocation().pathname;
+
   const { data: townships } = useGetAllTownshipsWithSuppliersQuery();
 
   const {
@@ -26,6 +29,12 @@ export const SupplierContent = () => {
   } = useGetAllSuppliersQuery();
 
   const [createSupplier] = useCreateSupplierMutation();
+
+  useEffect(() => {
+    if (path === "/setup/supplier") {
+      refetchSuppliers();
+    }
+  }, [path]);
 
   useEffect(() => {
     if (suppliers) {
@@ -136,10 +145,11 @@ export const SupplierContent = () => {
   ];
 
   useEffect(() => {
-    setIsDataCached(false);
-  }, [suppliers]);
+    let supplierCondition;
+    if (suppliers) {
+      supplierCondition = formData?.ids?.length > 0;
+    }
 
-  useEffect(() => {
     if (isSuppliersFetched && !isDataCached) {
       const dataFillLength = dataLength < 10 ? 10 : dataLength;
       const newRows = [];
@@ -160,6 +170,9 @@ export const SupplierContent = () => {
       }
       setRows(newRows);
       setIsDataCached(true);
+      if (suppliers && !supplierCondition) {
+        setIsDataCached(false);
+      }
     }
   }, [formData, setIsDataCached]);
 

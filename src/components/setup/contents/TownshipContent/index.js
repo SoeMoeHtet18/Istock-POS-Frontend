@@ -8,6 +8,7 @@ import {
   useGetAllTownshipsQuery,
 } from "../../../../tools/api-services/townshipApi";
 import { useGetAllDivisionsQuery } from "../../../../tools/api-services/divisionApi";
+import { useLocation } from "react-router-dom";
 
 export const TownshipContent = () => {
   const [dataLength, setDataLength] = useState(0);
@@ -15,6 +16,7 @@ export const TownshipContent = () => {
   const [divisionID, setDivisionID] = useState(null);
   const [editIndex, setEditIndex] = useState(null);
   const [isDataCached, setIsDataCached] = useState(false);
+  const path = useLocation().pathname;
 
   const {
     data: townships,
@@ -103,6 +105,10 @@ export const TownshipContent = () => {
   }, [townships]);
 
   useEffect(() => {
+    let townshipCondition;
+    if (townships) {
+      townshipCondition = formData?.ids?.length > 0;
+    }
     if (isTownshipsFetched && !isDataCached && divisions) {
       const dataFillLength = dataLength < 10 ? 10 : dataLength;
       const newRows = [];
@@ -123,6 +129,9 @@ export const TownshipContent = () => {
       }
       setRows(newRows);
       setIsDataCached(true);
+      if (townships && !townshipCondition) {
+        setIsDataCached(false);
+      }
     }
   }, [formData, setIsDataCached]);
 

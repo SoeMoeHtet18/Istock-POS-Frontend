@@ -9,16 +9,17 @@ import {
 import { useGetAllBranchesQuery } from "../../../../tools/api-services/branchApi";
 import LocationTableInput from "../../tableInputs/LocationTableInput";
 import { useGetAllLocationsQuery } from "../../../../tools/api-services/locationApi";
+import { useLocation } from "react-router-dom";
 
 export const LocationContent = () => {
   const [dataLength, setDataLength] = useState(0);
   const [formData, setFormData] = useState(null);
   const [editIndex, setEditIndex] = useState(null);
   const [isDataCached, setIsDataCached] = useState(false);
-
   const [category, setCategory] = useState(null);
   const [subCategory, setSubCategory] = useState(null);
   const [editingSlug, setEditingSlug] = useState("");
+  const path = useLocation().pathname;
 
   const {
     data: shops,
@@ -30,6 +31,12 @@ export const LocationContent = () => {
     useGetAllLocationsQuery();
 
   const [createShop, { isSuccess }] = useCreateShopMutation();
+
+  useEffect(() => {
+    if (path === "/setup/location") {
+      refetchLocations();
+    }
+  }, [path]);
 
   const createBulkShops = () => {
     const form = new FormData();
@@ -95,8 +102,12 @@ export const LocationContent = () => {
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
+    let locationCondition;
+    if (locations) {
+      locationCondition = formData?.ids?.length > 0;
+    }
+
     if (isShopsFetched && !isDataCached && branches && locations) {
-      console.log("data is not cached, so cache it now");
       const dataFillLength = dataLength < 10 ? 10 : dataLength;
       const newRows = [];
       for (let i = 0; i <= dataFillLength; i++) {
@@ -119,12 +130,15 @@ export const LocationContent = () => {
         );
       }
       setRows(newRows);
+
       setIsDataCached(true);
+      if (locations && !locationCondition) {
+        setIsDataCached(false);
+      }
     }
   }, [formData, isDataCached, isShopsFetched, branches, locations]);
 
   useEffect(() => {
-    console.log(editIndex, dataLength);
     editIndex !== null &&
       setRows((prevRows) => {
         const updatedRows = [...prevRows];
@@ -205,14 +219,12 @@ export const LocationContent = () => {
   const refetchDataAndCacheCategory = (category) => {
     setCategory(category);
     setSubCategory(null);
-    console.log("category fetched");
     refetchShops();
   };
 
   const refetchDataAndCacheSubCategory = (subCategory, category) => {
     setCategory(category);
     setSubCategory(subCategory);
-    console.log("subcategory fetched");
     refetchShops();
   };
 

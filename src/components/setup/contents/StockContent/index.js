@@ -9,6 +9,7 @@ import {
 import { StockNavBar } from "../../navBars/StockNavBar";
 import { StockDetail } from "../../sideDetails/StockDetail";
 import { useGetAllCategoriesQuery } from "../../../../tools/api-services/categoryApi";
+import { useLocation } from "react-router-dom";
 
 export const StockContent = () => {
   const [dataLength, setDataLength] = useState(0);
@@ -18,6 +19,7 @@ export const StockContent = () => {
   const [editIndex, setEditIndex] = useState(null);
   const [editingSlug, setEditingSlug] = useState("");
   const [isDataCached, setIsDataCached] = useState(false);
+  const path = useLocation().pathname;
 
   const {
     data: stocks,
@@ -32,6 +34,12 @@ export const StockContent = () => {
     useGetAllCategoriesQuery();
 
   const [createStock] = useCreateStockMutation();
+
+  useEffect(() => {
+    if (path === "/setup/stock") {
+      refetchStocks({ categoryId: "", subCategoryId: "" });
+    }
+  }, [path]);
 
   useEffect(() => {
     if (stocks) {
@@ -54,6 +62,7 @@ export const StockContent = () => {
         image: stocks.map((stock) => stock.image) ?? [],
       }));
       setDataLength(stocks.length);
+      setIsDataCached(false);
     }
   }, [stocks]);
 
@@ -143,10 +152,11 @@ export const StockContent = () => {
   ];
 
   useEffect(() => {
-    setIsDataCached(false);
-  }, [stocks]);
+    let stockCondition;
+    if (stocks) {
+      stockCondition = formData?.ids?.length > 0;
+    }
 
-  useEffect(() => {
     if (isStockSuccess && !isDataCached && categories) {
       const dataFillLength = dataLength < 10 ? 10 : dataLength;
       const newRows = [];
@@ -170,8 +180,11 @@ export const StockContent = () => {
       }
       setRows(newRows);
       setIsDataCached(true);
+      if (stocks && !stockCondition) {
+        setIsDataCached(false);
+      }
     }
-  }, [formData, setIsDataCached]);
+  }, [formData, isDataCached]);
 
   useEffect(() => {
     setRows((prevRows) => {
