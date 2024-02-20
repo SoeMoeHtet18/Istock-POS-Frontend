@@ -51,7 +51,7 @@ export const SupplierDetail = ({
         label: "Township",
         slug: "township_ids",
         type: "select",
-        options: ["Brand 1", "Brand 2", "Brand 3"],
+        options: townships,
       },
     ]);
 
