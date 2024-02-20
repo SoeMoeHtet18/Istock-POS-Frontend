@@ -12,78 +12,55 @@ import {
 } from "../../../tools/api-services/branchApi";
 import { useCreateLocationMutation } from "../../../tools/api-services/locationApi";
 import { MenuItem } from "@mui/material";
+import { useCreateTownshipMutation } from "../../../tools/api-services/townshipApi";
 
 export const SupplierNavBar = ({
   onCategoryClick,
   onSubCategoryClick,
-  branches,
-  refetchBranches,
+  townships,
+  refetchTownships,
 }) => {
-  const [navItems, setNavItems] = useState(branches);
+  const [navItems, setNavItems] = useState([]);
   const [classFormOpen, setClassFormOpen] = useState(false);
-  const [categoryFormOpen, setCategoryFormOpen] = useState(false);
   const [parentClassId, setParentClassId] = useState(0);
 
-  const [createBranch, { isSuccess }] = useCreateBranchMutation();
-
-  const [createLocation, { isSuccess: subIsSuccess }] =
-    useCreateLocationMutation();
+  const [createTownship, { isSuccess }] = useCreateTownshipMutation();
 
   useEffect(() => {
-    if (isSuccess || subIsSuccess) {
-      refetchBranches();
+    if (isSuccess) {
+      refetchTownships();
     }
-  }, [isSuccess, subIsSuccess]);
+  }, [isSuccess]);
 
-  // if branches are not synced with cmt out this
-  //   useEffect(() => {
-  //     setNavItems(branches);
-  //   }, [branches]);
+  useEffect(() => {
+    setNavItems(townships);
+  }, [townships]);
 
   const openClassForm = () => setClassFormOpen(true);
-  const openCategoryForm = (e) => {
-    if (e.target) {
-      const parentClassId = parseInt(e.target.getAttribute("data-id"));
-      setParentClassId(parentClassId);
-    }
-    setCategoryFormOpen(true);
-  };
 
   const titleOptions = [
     {
-      name: "New Branch",
+      name: "New Township",
       onClick: openClassForm,
     },
-    { name: "Print Branch", onClick: () => {} },
+    { name: "Print Township", onClick: () => {} },
   ];
 
   const classOptions = [
     {
-      name: "New Branch",
+      name: "New Township",
       onClick: openClassForm,
     },
-    { name: "Edit Branch", onClick: () => {} },
-    { name: "Delete Branch", onClick: () => {}, isBreak: true },
-    { name: "New Location Group", onClick: openCategoryForm },
-    { name: "Print Location Group", onClick: () => {}, isBreak: true },
-    { name: "Merge Branch", onClick: () => {} },
-  ];
-
-  const categoryOptions = [
-    {
-      name: "New Location Group",
-      onClick: openCategoryForm,
-    },
-    { name: "Edit", onClick: () => {} },
-    { name: "Delete", onClick: () => {}, isBreak: true },
-    { name: "Merge Location Group", onClick: () => {} },
+    { name: "Edit Township", onClick: () => {} },
+    { name: "Delete Township", onClick: () => {}, isBreak: true },
+    // { name: "Merge Branch", onClick: () => {} },
   ];
 
   const renderNavOptions = () => {
     if (!navItems || navItems.length === 0) return null;
 
     return navItems.map((item) => (
-      <div key={item.name + item.code} className="flex flex-col">
+      <div key={item.name} className="flex flex-col">
         {/* Branches */}
         <NavItem
           item={item}
@@ -91,21 +68,8 @@ export const SupplierNavBar = ({
           icon={<BiCategoryAlt />}
           classes="ml-4"
           onClick={onCategoryClick}
+          title={item.name}
         />
-
-        {/* Location Groups */}
-        {item.sub_categories?.length > 0 &&
-          item.sub_categories.map((sub_item) => (
-            <NavItem
-              key={sub_item.id + sub_item.code}
-              item={sub_item}
-              icon={<MdOutlineCategory />}
-              options={categoryOptions}
-              classes="ml-8"
-              parentItem={item}
-              onClick={onSubCategoryClick}
-            />
-          ))}
       </div>
     ));
   };
@@ -119,29 +83,12 @@ export const SupplierNavBar = ({
 
   const { data, error, loading } = useGetAllBranchesQuery();
 
-  const optionsForCategoryForm =
-    data &&
-    data.map((branch) => (
-      <MenuItem key={branch.id} value={branch.id}>
-        {`${branch.name} - ${branch.code}`}
-      </MenuItem>
-    ));
-
   const forms = [
     <ClassFormDialog
-      label="Branch"
+      label="Township"
       open={classFormOpen}
       handleClose={() => setClassFormOpen(false)}
-      apiCall={createBranch}
-    />,
-    <CategoryFormDialog
-      label="Location Group"
-      supLabel="Branch"
-      supOptions={optionsForCategoryForm}
-      open={categoryFormOpen}
-      handleClose={() => setCategoryFormOpen(false)}
-      apiCall={createLocation}
-      classId={parentClassId}
+      apiCall={createTownship}
     />,
   ];
 

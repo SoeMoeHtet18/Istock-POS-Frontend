@@ -236,7 +236,7 @@ export const SupplierContent = () => {
     <Content
       pageTitle={"Supplier"}
       tableTitle={"Supplier"}
-      navBar={<SupplierNavBar />}
+      navBar={<SupplierNavBar townships={townships} />}
       dataTable={<DataTable theads={theads} tRows={rows} />}
       dataLength={dataLength}
       bottomNavBtns={bottomNavBtns}
